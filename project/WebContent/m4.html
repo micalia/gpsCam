@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>Insert title here</title>
+<script src="./js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufu00uecjo"></script>
+
+<style>
+@import "compass/css3";
+
+.circle {
+  background: red;
+  width: 85px;
+  height: 85px;
+  margin: auto;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.circle {
+  -webkit-animation:grow 2.8s infinite;
+}
+@-webkit-keyframes grow {
+ 0% {
+-webkit-transform: scale( 0.2 );-moz-transform: scale( 0 .2);-o-transform: scale( 0.2 );-ms-transform: scale( 0.2 );transform: scale( 0.2 );
+  } 
+  50% {
+  -webkit-transform: scale( 0.14 );-moz-transform: scale( 0.14 );-o-transform: scale( 0.14 );-ms-transform: scale( 0.14 );transform: scale( 0.14 );
+  }  
+  100% {
+  -webkit-transform: scale( 0.2);-moz-transform: scale( 0.2 );-o-transform: scale( 0.2 );-ms-transform: scale( 0.2 );transform: scale( 0.2 );
+  }
+}
+.image-box{
+	color:black;
+}
+</style>
+</head>
+<body>
+<form action="http://localhost:8080/project/fileUpload.jsp" method="post" enctype="multipart/form-data">
+<!-- <form action="http://54.180.24.137:8080/project/fileUpload.jsp" method="post" enctype="multipart/form-data"> -->
+<input type="file" name="img" accept="image/*" id="img"> <br>
+<input type="submit"> 
+</form>
+<div id="map" style="width:100%;height:600px;"></div>
+
+<script>
+$(window).on("load", function() {
+	
+	$("#img").on('change', function(){
+        
+		readURL(this);
+	});
+	
+	function readURL(input) {
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+        		$('<img id ="blah" src="'+ e.target.result +'">').insertAfter('#map');
+                /* $("#map").html("<div class='image-box'></div>") */
+            }
+
+          reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+
+var locationBtnHtml = '<button>현재위치</button>';
+var map = new naver.maps.Map(document.getElementById('map'), { zoom: 18 });
+
+naver.maps.Event.once(map, 'init_stylemap', function() {
+	var customControl = new naver.maps.CustomControl(locationBtnHtml, {
+        position: naver.maps.Position.TOP_LEFT
+    });
+
+    customControl.setMap(map);
+    naver.maps.Event.addDOMListener(customControl.getElement(), 'click', function() {
+    	navigator.geolocation.getCurrentPosition(onSuccessGeolocation2, onErrorGeolocation); 
+    });
+});
+
+function onSuccessGeolocation(position) {
+var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+    map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
+    map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
+
+}
+
+function onSuccessGeolocation2(position) {
+	var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+	    map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
+	}
+	
+function onErrorGeolocation() {
+    var center = map.getCenter();
+
+    infowindow.setContent('<div style="padding:20px;">' +
+        '<h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5>'+ "latitude: "+ center.lat() +"<br />longitude: "+ center.lng() +'</div>');
+
+    infowindow.open(map, center);
+}
+    if (navigator.geolocation) {
+    	
+    	navigator.geolocation.getCurrentPosition(onSuccessGeolocation, onErrorGeolocation);       
+         navigator.geolocation.watchPosition(
+                 function(position) {
+                	 var location = new naver.maps.LatLng(position.coords.latitude,
+                             position.coords.longitude);
+                	 if(document.getElementById("circle")){
+                		 document.getElementById("circle").remove();
+                	 }
+               	 	//map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
+					//map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
+					
+					var unarySpotMarker = new naver.maps.Marker({
+				    position: location,
+				    map: map,
+				    //title: 'Unary Spot!!',
+				    icon: {
+				        content: '<div id="circle" class="circle"></div>',
+				        //size: new naver.maps.Size(22, 35),
+				       // anchor: new naver.maps.Point(11, 35)
+				    }
+                 });
+					//infowindow.open(map, location);
+					//console.log('Coordinates: ' + location.toString());
+					
+                     $('#latitude').html(position.coords.latitude);     // 위도 
+                     $('#longitude').html(position.coords.longitude); // 경도 
+                     
+                 });
+    } else {
+    	alert("오류");
+        var center = map.getCenter();
+        infowindow.setContent('<div style="padding:20px;"><h5 style="margin-bottom:5px;color:#f00;">Geolocation not supported</h5></div>');
+        infowindow.open(map, center);
+    }
+
+    
+   
+});
+</script>
+
+</body>
+</html>
