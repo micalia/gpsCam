@@ -97,12 +97,15 @@ body{
 
 $(window).on("load", function() {
 	
-	/* var locationBtnHtml = '<form action="http://localhost:8080/project/fileUpload.jsp" method="post" enctype="multipart/form-data"> \n'
+	var locationBtnHtml = '<form id="imageFrm" method="post" enctype="multipart/form-data"> \n'
+								+ '<label for="img"><img src="./img/cam_icon.png" class="camIcon"></label> \n'
+								+ '<input type="file" name="img" accept="image/*" id="img">'
+								+ '<input type="hidden" id="latV" name ="latitude" value="">'
+								+ '<input type="hidden" id="lngV" name ="longitude" value=""></form>'; 
+								
+	/*  var locationBtnHtml = '<form id="imageFrm" action="http://54.180.24.137:8080/project/fileUpload.jsp" method="post" enctype="multipart/form-data"> \n'
 								+ '<label for="img"><img src="./img/cam_icon.png" class="camIcon"></label> \n'
 								+ '<input type="file" name="img" accept="image/*" id="img"></form>'; */
-	 var locationBtnHtml = '<form action="http://54.180.24.137:8080/project/fileUpload.jsp" method="post" enctype="multipart/form-data"> \n'
-								+ '<label for="img"><img src="./img/cam_icon.png" class="camIcon"></label> \n'
-								+ '<input type="file" name="img" accept="image/*" id="img"></form>'; 
 	
 	function readURL(input) {
 	    if (input.files && input.files[0]) {
@@ -110,17 +113,43 @@ $(window).on("load", function() {
 
 	    reader.onload = function (e) {
 	    		$(".image-box").html('<div id="uploadBox"><div class="imgContainer"><img id ="blah" src="'+ e.target.result +'" class="uploadImg"></div>'+
-	    									'<div class="btn-box"><button id="cancelUp" class="btn btn-danger btn-lg">취소</button><span class="marSpan"></span><button class="btn btn-primary btn-lg">확인</button></div></div>');
+	    									'<div class="btn-box"><button id="cancelUp" class="btn btn-danger btn-lg">취소</button><span class="marSpan"></span><button id="uploadBtn" class="btn btn-primary btn-lg">확인</button></div></div>');
 	    		var cancelUp = document.getElementById('cancelUp');
 	    		cancelUp.addEventListener('click', function(event){
-	    	        $("#uploadBox").remove();
 	    	        document.getElementsByClassName("image-box")[0].style.display="none";
+	    	        $("#uploadBox").remove();
 	    	    });
+	    		
+	    		var uploadBtn = document.getElementById('uploadBtn');
+	    		uploadBtn.addEventListener('click', function(event){
+	    			/* var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
+	    			console.log(location) */
+	    		var lat = document.getElementById('latV').value;
+	    		var lng = document.getElementById('lngV').value;
+	    			//navigator.geolocation.getCurrentPosition(success, error);
+	    			document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
+	    	       document.getElementById('imageFrm').submit(); 
+	    	    });
+	    		
 	        }
 
 	      reader.readAsDataURL(input.files[0]);
 	    }
 	}
+	
+	/* function success(pos) {
+		  var crd = pos.coords;
+			alert("실행");
+		  $('#imageFrm').append('<input type="hidden" name = "latitude" value="'+ crd.latitude +'"'>);
+		  $('#imageFrm').append('<input type="hidden" name = "latitude" value="'+ crd.longitude +'"'>);
+		  
+		  console.log('Latitude : ' + crd.latitude);
+		  console.log('Longitude: ' + crd.longitude);
+		};
+
+		function error(err) {
+		  console.warn('ERROR(' + err.code + '): ' + err.message);
+		}; */
 	
 	var map = new naver.maps.Map('map', {
 		zoom: 13,
@@ -155,7 +184,7 @@ $(window).on("load", function() {
 		    map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
 		    map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
 
-		}
+	}
 
 		function onSuccessGeolocation2(position) {
 			var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -176,6 +205,10 @@ $(window).on("load", function() {
 		    	navigator.geolocation.getCurrentPosition(onSuccessGeolocation, onErrorGeolocation);       
 		         navigator.geolocation.watchPosition(
 		                 function(position) {
+		                	 document.getElementById("latV").value=position.coords.latitude;
+		                	 document.getElementById("lngV").value= position.coords.longitude;
+		                	 console.log("lat" + position.coords.latitude);
+		                	 console.log("lng" + position.coords.longitude);
 		                	 var location = new naver.maps.LatLng(position.coords.latitude,
 		                             position.coords.longitude);
 		                	 if(document.getElementById("circle")){
@@ -205,7 +238,7 @@ $(window).on("load", function() {
 		        infowindow.open(map, center);
 		    }
 		    
-    
+		   
 	
 });
 

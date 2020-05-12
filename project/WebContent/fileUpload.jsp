@@ -4,6 +4,8 @@
 <%@page import="java.util.Enumeration"%>
 <%@page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
 <%@page import="java.io.File"%>
+<%@ page import="org.json.simple.JSONObject"%>
+<%@ page import="imgInfo.ImginfoDAO"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +16,10 @@
 <body>
 
 <%
-	
+request.setCharacterEncoding("UTF-8"); 
+String lat = request.getParameter("lat");
+String lng = request.getParameter("lng");
+
 java.util.Calendar cal = java.util.Calendar.getInstance();
 String year = Integer.toString(cal.get ( cal.YEAR ));
 String month = Integer.toString(cal.get ( cal.MONTH ) + 1) ;
@@ -37,20 +42,24 @@ if(!Folder.exists()) {
 
 int size = 10*1024*1024;
 String imgName = "";
-	
+
 try{
     MultipartRequest multi=new MultipartRequest(request,uploadPath,size,"utf-8",new DefaultFileRenamePolicy());
 		
     Enumeration files = multi.getFileNames();
     String img = (String)files.nextElement();
     imgName = multi.getFilesystemName(img);
-    /* String file2 = (String)files.nextElement();
-    filename2=multi.getFilesystemName(file2); */
+    String fullPath = uploadPath + "\\" + imgName;
+    
+    ImginfoDAO imginfoDAO = new ImginfoDAO();
+    imginfoDAO.upImgInfo(lat, lng, fullPath);
 }catch(Exception e){
     e.printStackTrace();
 }
+
+
 %>
-<body>
+
 <script>
 	history.back();
 </script>
