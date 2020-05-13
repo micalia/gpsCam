@@ -1,3 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="imgInfo.ImginfoDAO" %>
+<%@ page import="imgInfo.ImgInfo" %>
+<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -183,21 +188,81 @@ $(window).on("load", function() {
 	    });
 
 	});
-	
-	var getShowMarker = new naver.maps.Marker({
+	<%
+		ArrayList<ImgInfo> selectAll = null;
+		ArrayList<ImgInfo> equalPos = null;
+		ImgInfo imgInfo = null;
+		int sCount = 0;
+		ImginfoDAO imginfoDAO = new ImginfoDAO();
+		selectAll = imginfoDAO.getPosNum();
+		String lat ="";
+		String lng ="";
+		for (int i = 0; i < selectAll.size(); i++) {
+			lat = selectAll.get(i).getLatitude();
+			lng = selectAll.get(i).getLongitude();
+			sCount = imginfoDAO.getPosCount(selectAll.get(i).getLatitude(), selectAll.get(i).getLongitude());//같은위치에 등록된 사진 갯수
+			
+			if(sCount == 1){
+				imgInfo = imginfoDAO.posData(selectAll.get(i).getLatitude(), selectAll.get(i).getLongitude());
+				System.out.println(imgInfo.getImg_path());
+				%>
+				var getShowMarker = new naver.maps.Marker({
+				    position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
+				    map: map,
+				    icon: {
+				        content: [
+				                    '<div class="getShowM">',
+				                    <%= sCount%>,
+				                    '</div>'
+				                ].join(''),
+				        size: new naver.maps.Size(38, 58),
+				        anchor: new naver.maps.Point(19, 58),
+				    },
+				    //draggable: true 드래그 가능
+				});
+				
+			<% }else if(sCount > 1){
+				equalPos = imginfoDAO.equalPos(lat, lng);%>
+				
+					var getShowMarker = new naver.maps.Marker({
+					    position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
+					    map: map,
+					    icon: {
+					        content: [
+					                    '<div class="getShowM">',
+					                    <%= sCount%>,
+					                    '</div>'
+					                ].join(''),
+					        size: new naver.maps.Size(38, 58),
+					        anchor: new naver.maps.Point(19, 58),
+					    },
+					    //draggable: true 드래그 가능
+					});
+				
+				<%
+				for (int j = 0; j < equalPos.size(); j++) {
+					System.out.println(equalPos.get(j).getImg_path());
+					%>
+					
+					<%
+				}
+			}
+		}
+	%>
+	/* var getShowMarker = new naver.maps.Marker({
 	    position: new naver.maps.LatLng(37.0073565, 127.17576810000001),
 	    map: map,
 	    icon: {
 	        content: [
 	                    '<div class="getShowM">',
-	                    '1',
+	                    3,
 	                    '</div>'
 	                ].join(''),
 	        size: new naver.maps.Size(38, 58),
 	        anchor: new naver.maps.Point(19, 58),
 	    },
 	    //draggable: true 드래그 가능
-	});
+	}); */
    
 	function onSuccessGeolocation(position) {
 		var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
