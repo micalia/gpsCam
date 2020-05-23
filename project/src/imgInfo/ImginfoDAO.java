@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import boards.Boards;
 import imgInfo.ImgInfo;
 
 public class ImginfoDAO {
@@ -17,6 +16,7 @@ public class ImginfoDAO {
 	public ImginfoDAO() {
 		try {
 			String dbURL = "jdbc:mysql://localhost:3306/gpscam";
+			//String dbURL = "jdbc:mysql://54.180.24.137:3306/gpscam";
 			String dbID = "root";
 			String dbPassword = "";
 			Class.forName("com.mysql.jdbc.Driver");
@@ -27,7 +27,7 @@ public class ImginfoDAO {
 	}
 	
 	public int upImgInfo(String lat, String lng, String path) {
-		String SQL = "insert into img_info values (?, ?, ?)";
+		String SQL = "insert into img_info(latitude, longitude, img_path, time) values (?, ?, ?, now())";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
 			
@@ -105,9 +105,12 @@ public class ImginfoDAO {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				ImgInfo imgInfo = new ImgInfo();
-				imgInfo.setLatitude(rs.getString(1));
-				imgInfo.setLongitude(rs.getString(2));
-				imgInfo.setImg_path(rs.getString(3));
+			
+				imgInfo.setNum(rs.getInt(1));
+				imgInfo.setLatitude(rs.getString(2));
+				imgInfo.setLongitude(rs.getString(3));
+				imgInfo.setImg_path(rs.getString(4));
+				imgInfo.setTime(rs.getString(5));
 				list.add(imgInfo);
 			}
 		} catch (Exception e) {
@@ -134,9 +137,12 @@ public class ImginfoDAO {
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				ImgInfo imgInfo = new ImgInfo();
-				imgInfo.setLatitude(rs.getString(1));
-				imgInfo.setLongitude(rs.getString(2));
-				imgInfo.setImg_path(rs.getString(3));
+				
+				imgInfo.setNum(rs.getInt(1));
+				imgInfo.setLatitude(rs.getString(2));
+				imgInfo.setLongitude(rs.getString(3));
+				imgInfo.setImg_path(rs.getString(4));
+				imgInfo.setTime(rs.getString(5));
 				return imgInfo;
 			}
 		} catch (Exception e) {

@@ -3,12 +3,13 @@
 <%@ page import="imgInfo.ImginfoDAO" %>
 <%@ page import="imgInfo.ImgInfo" %>
 <%@ page import="java.util.ArrayList" %>
+<%String title = "테스트타이틀";%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Insert title here</title>
+<title><%= title %></title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="./js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufu00uecjo"></script>
@@ -88,6 +89,7 @@ body{
 	z-index:1;
 }
 .getShowM{
+    display: inline-block;
 	background-color:#4287f5;
 	color:white;
 	padding:0px 9px 0px 9px;
@@ -138,7 +140,8 @@ $(window).on("load", function() {
 	    		var lat = document.getElementById('latV').value;
 	    		var lng = document.getElementById('lngV').value;
 	    			//navigator.geolocation.getCurrentPosition(success, error);
-	    			document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
+				   // document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;  //이클립스에서는 풀기
+	    			document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng; //실제 웹서버에서 실행
 	    	       document.getElementById('imageFrm').submit(); 
 	    	    });
 	    		
@@ -211,9 +214,11 @@ $(window).on("load", function() {
 				    map: map,
 				    icon: {
 				        content: [
+				        	<%-- <img src="<%= imgInfo.getImg_path()%>" style="width:100px; height:100px;"> --%>
 				                    '<div class="getShowM">',
 				                    <%= sCount%>,
 				                    '</div>'
+				                    //<img src="" style="width:100px; height:100px;">
 				                ].join(''),
 				        size: new naver.maps.Size(38, 58),
 				        anchor: new naver.maps.Point(19, 58),
@@ -293,8 +298,8 @@ $(window).on("load", function() {
 		                 function(position) {
 		                	 document.getElementById("latV").value=position.coords.latitude;
 		                	 document.getElementById("lngV").value= position.coords.longitude;
-		                	 console.log("lat" + position.coords.latitude);
-		                	 console.log("lng" + position.coords.longitude);
+		                	// console.log("lat" + position.coords.latitude);
+		                	 //console.log("lng" + position.coords.longitude);
 		                	 var location = new naver.maps.LatLng(position.coords.latitude,
 		                             position.coords.longitude);
 		                	 if(document.getElementById("circle")){
@@ -316,6 +321,12 @@ $(window).on("load", function() {
 		                     $('#latitude').html(position.coords.latitude);     // 위도 
 		                     $('#longitude').html(position.coords.longitude); // 경도 
 		                     
+		                 }, function(error){
+		                	 alert(error);
+		                 }, {
+		                		enableHighAccuracy: true,
+			     				timeout: Infinity,
+			     				maximumAge: 0
 		                 });
 		    } else {
 		    	alert("오류");

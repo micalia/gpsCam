@@ -1,10 +1,18 @@
 package imgInfo;
 
 public class ImgInfo {
+	private int num;
 	private String latitude;
 	private String longitude;
 	private String img_path;
+	private String time;
 	
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
 	public String getLatitude() {
 		return latitude;
 	}
@@ -22,6 +30,12 @@ public class ImgInfo {
 	}
 	public void setImg_path(String img_path) {
 		this.img_path = img_path;
+	}
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
 	}
 	
 	

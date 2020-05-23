@@ -49,7 +49,7 @@ try{
     Enumeration files = multi.getFileNames();
     String img = (String)files.nextElement();
     imgName = multi.getFilesystemName(img);
-    String fullPath = uploadPath + "\\" + imgName;
+    String fullPath = "/project/upload/" + time + "/" + imgName;
     
     ImginfoDAO imginfoDAO = new ImginfoDAO();
     imginfoDAO.upImgInfo(lat, lng, fullPath);
@@ -61,7 +61,7 @@ try{
 %>
 
 <script>
-	history.back();
+	location.href="https://54.180.24.137:8443/project/0513.jsp";
 </script>
 </body>
 </html>
