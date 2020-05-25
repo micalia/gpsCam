@@ -61,7 +61,8 @@ try{
 %>
 
 <script>
-	location.href="https://54.180.24.137:8443/project/0513.jsp";
+	//location.href="https://54.180.24.137:8443/project/0513.jsp";
+	location.href="https://localhost:8443/project/0525full.jsp";
 </script>
 </body>
 </html>

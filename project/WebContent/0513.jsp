@@ -24,11 +24,15 @@ body{
 }
 .circle {
   background: red;
-  width: 85px;
-  height: 85px;
+  width: 86px;
+  height: 86px;
+  position:absolute;
+  top:-43px;
+  left:-43px;
   margin: auto;
   border-radius: 100%;
   overflow: hidden;
+  
 }
 .circle {
   -webkit-animation:grow 2.8s infinite;
@@ -174,7 +178,7 @@ $(window).on("load", function() {
 	        position: naver.maps.Position.TOP_RIGHT
 	    }
 		});
-
+		var infowindow = new naver.maps.InfoWindow();/////////////////
 	naver.maps.Event.once(map, 'init_stylemap', function() {
 	    //customControl 객체 이용하기
 	    var customControl = new naver.maps.CustomControl(locationBtnHtml, {
@@ -207,7 +211,7 @@ $(window).on("load", function() {
 			
 			if(sCount == 1){
 				imgInfo = imginfoDAO.posData(selectAll.get(i).getLatitude(), selectAll.get(i).getLongitude());
-				System.out.println(imgInfo.getImg_path());
+				//System.out.println(imgInfo.getImg_path());
 				%>
 				var getShowMarker = new naver.maps.Marker({
 				    position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
@@ -246,7 +250,7 @@ $(window).on("load", function() {
 				
 				<%
 				for (int j = 0; j < equalPos.size(); j++) {
-					System.out.println(equalPos.get(j).getImg_path());
+					//System.out.println(equalPos.get(j).getImg_path());
 					%>
 					
 					<%
@@ -275,6 +279,10 @@ $(window).on("load", function() {
 		    map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
 		    map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
 
+		    
+		    infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
+
+		    infowindow.open(map, location);
 	}
 
 		function onSuccessGeolocation2(position) {

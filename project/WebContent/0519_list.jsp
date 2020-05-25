@@ -107,6 +107,8 @@ body{
     top: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
+    overflow:auto;
+    -webkit-overflow-scrolling: touch;
 }
 #imgList{
 	width:100%;
@@ -123,6 +125,28 @@ body{
 	z-index:2;
 	position:relative;
 	display:none;
+}
+.liimgstyle{
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width:100%;
+            height:auto;
+          /*   width: 815px;
+            height: 815px; */
+}
+.list-area{
+	/* padding-left:17px;
+	padding-right:17px; */
+	border: 8px solid #c4c4c4;
+}
+#realList li{
+	margin-top:46px;
+	margin-bottom:46px;
+}
+.lidate-str{
+	font-size:40px;
 }
 </style>
 </head>
@@ -160,31 +184,35 @@ body{
 	        intersectNotice: false,//교차 알림
 	       intersectNoticeTemplate: '<div style="width:10px;border:solid 1px #333;background-color:#fff;">{{count}}</div>',
 	       intersectList: true,
-	        intersectListTemplate:'<ul id="liList" style="list-style:none;margin:0;padding:0;">'
+	        intersectListTemplate:'<ul id="liList" style="display:none;">'
 	            + '{{#repeat}}'
-	            + '<li style="list-style:none;margin:0;padding:0;"><a href="#">{{order}}. {{title}}</a></li>'
+	            + '<li class="li-data" style="list-style:none;" data-val="{{title}}"></li>'
 	            + '{{/#repeat}}'
 	            + '</ul>'
 	        	+ '<SCRIPT' + '>'
-	        + 'var listBox = document.getElementById("listContainer");'
-	        + 'listBox.style.display="block";'
-	        + 'var liList = $("#liList").html();'
-	        + '$("#listContainer").html("'
-	        		/* + '<span style=\'color:yellow;\'>하이</span>' 잘됨*/
-	        + '<div id=\'interBox\'><input type=\'button\' value=\'닫기\' id=\'closeList\' onclick=\'closeList()\'>'
-            + '<ul style=\'list-style:none;margin:0;padding:0;\'>"'
-            + '+ liList +'
-            + '"</ul>'
-            + '</div>'	
-			+ '");'
-	        /* + '<div id="interBox"><input type="button" value="닫기" id="closeList" onclick="closeList()">'
-            + '<ul style="list-style:none;margin:0;padding:0;">'
-            + '{{#repeat}}'
-            + '<li style="list-style:none;margin:0;padding:0;"><a href="#">{{order}}. {{title}}</a></li>'
-            + '{{/#repeat}}'
-            + '</ul>'
-            + '</div>' */
-	        		/* + '");' */
+	        	+ '$(document).ready(function(){'
+	        	+ 'var liArray = document.getElementsByClassName("li-data");'
+	        	+ 'var ArrayBox = new Array;'
+	        		+ 'for(i=0; i<liArray.length; i++){'
+	        	+ 'var strArray = liArray[i].dataset.val.split(","); '
+	        			+ 'ArrayBox.push(strArray);'
+	        			+'}'
+	        		
+	        		+ 'ArrayBox.sort().reverse();'
+	        		+ 'for(i=0; i<ArrayBox.length; i++){'
+	        			+ '$("#realList").append("<li><div class=\'list-area\'>'
+	        					+ '<div class=\'img-area\'><img class=\'liimgstyle\' src=\'"+ ArrayBox[i][1] +"\'></div><span class=\'lidate-str\'>" + ArrayBox[i][0] + "</span></div></li>");'
+	        			+ '}' 
+	        		+ ' });'
+	        		+ '</SCRIPT' + '>'
+        		+ '<SCRIPT' + '>'
+			        + 'var listBox = document.getElementById("listContainer");'
+			        + 'listBox.style.display="block";'
+			        + '$("#listContainer").html("'
+			        + '<div id=\'interBox\'><input type=\'button\' value=\'닫기\' id=\'closeList\' onclick=\'closeList()\'>'
+		            + '<ul id=\'realList\' style=\'list-style:none;margin:0;padding:0;\'></ul>'
+		            + '</div>'	
+					+ '");'
 	        	+ '</SCRIPT' + '>'
 	        	
 	            + '<SCRIPT' + '>'
@@ -599,7 +627,7 @@ body{
 	var marker = new naver.maps.Marker({
 		position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
 		map: map,
-		title: '<%= imgInfo.getTime()%>',
+		title: '<%= imgInfo.getTime().substring(0,19)%>,<%= imgInfo.getImg_path()%>',
 		icon: {
 		content: [
 			<%-- <img src="<%= imgInfo.getImg_path()%>" style="width:100px; height:100px;"> --%>
@@ -622,6 +650,7 @@ body{
 	var marker = new naver.maps.Marker({
 		position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
 		map: map,
+		title: '<%= imgInfo.getTime().substring(0,19)%>,<%= imgInfo.getImg_path()%>',
 		icon: {
 		    content: [
 		                '<div class="getShowM">',
@@ -650,7 +679,9 @@ body{
 
 	var overlapCoverMarker = null;
 
-	$('.closeList').click(function(){});
+	
+	
+	
 //});
 </script>
 </body>
