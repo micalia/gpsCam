@@ -15,10 +15,10 @@ public class ImginfoDAO {
 
 	public ImginfoDAO() {
 		try {
-			String dbURL = "jdbc:mysql://localhost:3306/gpscam";
-			//String dbURL = "jdbc:mysql://54.180.24.137:3306/gpscam";
+			String dbURL = "jdbc:mysql://localhost:3306/gpscam";//aws도 localhost임
 			String dbID = "root";
 			String dbPassword = "";
+			//String dbPassword = "root";//AWS
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(dbURL, dbID, dbPassword);
 		} catch (Exception e) {
@@ -27,7 +27,7 @@ public class ImginfoDAO {
 	}
 	
 	public int upImgInfo(String lat, String lng, String path) {
-		String SQL = "insert into img_info(latitude, longitude, img_path, time) values (?, ?, ?, now())";
+		String SQL = "insert into gpscam.img_info(latitude, longitude, img_path, time) values (?, ?, ?, now())";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
 			
@@ -43,7 +43,7 @@ public class ImginfoDAO {
 	}
 
 	public ArrayList<ImgInfo> getPosNum() {
-		String sql = "SELECT DISTINCT latitude, longitude FROM img_info";
+		String sql = "SELECT DISTINCT latitude, longitude FROM gpscam.img_info";
 		ArrayList<ImgInfo> list = new ArrayList<ImgInfo>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -71,7 +71,7 @@ public class ImginfoDAO {
 	
 	public int getPosCount(String lat, String lng){
 		int count = 0;
-		String sql = "select count(*) from img_info where latitude=? and longitude=?";
+		String sql = "select count(*) from gpscam.img_info where latitude=? and longitude=?";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, lat);
@@ -96,7 +96,7 @@ public class ImginfoDAO {
 	}
 	
 	public ArrayList<ImgInfo> equalPos(String lat, String lng) {
-		String sql = "SELECT * FROM img_info where latitude=? and longitude=?";
+		String sql = "SELECT * FROM gpscam.img_info where latitude=? and longitude=?";
 		ArrayList<ImgInfo> list = new ArrayList<ImgInfo>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -130,7 +130,7 @@ public class ImginfoDAO {
 	
 	public ImgInfo posData(String lat, String lng) {
 		try {
-			String SQL = "select * from img_info where latitude = ? and longitude=?";
+			String SQL = "select * from gpscam.img_info where latitude = ? and longitude=?";
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
 			pstmt.setString(1, lat);
 			pstmt.setString(2, lng);

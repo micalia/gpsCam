@@ -13,7 +13,7 @@
 <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufu00uecjo&submodules=geocoder"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<title>지도 위치 검색</title>
+<title>history view</title>
 <style>
 @import "compass/css3";
 
@@ -51,19 +51,19 @@ body{
 .camIcon{
 	width:60px;
 	position:absolute;
-	bottom:104px;
-	right:21px;
+	bottom:87px;
+	right:14px;
 }
 #img{
 	display:none;
 }
 .image-box{
 	width:100%;
-	height:999px;
+	height:100%;
 	background:rgba(0,0,0,0.5);
 	padding-top:80px;
 	z-index:2;
-	position:relative;
+	position:absolute;
 	display:none;
 }
 .uploadImg{
@@ -74,7 +74,7 @@ body{
 .imgContainer{
 	width:316px;
 	margin:0 auto;
-	border:3px solid yellow;
+	/* border:3px solid yellow; */
 	height:300px;
 	line-height:285px;
 	text-align:center;
@@ -93,15 +93,7 @@ body{
 	z-index:1;
 }
 .getShowM{
-	/* position:relative;
-	top:20px;
-    display: inline-block;
-	background-color:#4287f5;
-	color:white;
-	padding:0px 9px 0px 9px;
-	border-radius:18px;
-	font-size:27px; */
-	 background: #4287f5;
+  background: #4287f5;
   width: 34px;
   height: 34px;
   margin: auto;
@@ -116,7 +108,7 @@ body{
 	height:96%;
 	border:solid 1px #333;
 	background-color:#fff;
-	padding:5px;
+	/* padding:5px; */
 	margin:0 auto;
 	left: 50%;
     top: 50%;
@@ -124,6 +116,7 @@ body{
     transform: translate(-50%, -50%);
     /* overflow:auto; */
     -webkit-overflow-scrolling: touch;
+    border-radius:15px;
 }
 #imgList{
 	width:100%;
@@ -185,36 +178,238 @@ body{
 #address{
 	width:80%;
 	float:left;
-	font-size:24px;
+	font-size:22px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-radius: 0px;
 }
 #search-btn{
 	width:20%;
-	font-size:24px;
+	font-size:22px;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    border-radius: 0px;
 }
 #closeList{
-	float:right;
-	width:100%;
-	height:7%;
-	font-size: 24px;
+	float: right;
+    width: 100%;
+    height: 8%;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 0px;
+    font-size: 24px;
+    border-top-right-radius: 0px;
 }
 .scroll-box{
     overflow: auto;
-    height: 93%;
+    height: 92%;
 }
+.gpsIcon{
+	width:60px;
+	position: absolute;
+	z-index:2;
+	left:14px;
+	bottom:82px;
+}
+#loadingBox{
+	width:100%;
+	height:100%;
+	z-index:4;
+	position: absolute;
+	display:none;
+	background:rgba(0,0,0,0.4);
+}
+
+
+.flexbox{
+    margin: 0 auto;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+
+.flexbox > div {
+  width: 150px;
+  height: 150px;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 25%;
+  flex: 0 0 25%;
+ /*  border: 1px solid black; */
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+
+
+
+/* CIRCLE DOT LOADER */
+
+.circle-loader {
+  position: relative;
+  width: auto;
+  height: auto;
+}
+
+.circle-loader div {
+  height: 10px;
+  width: 10px;
+  background-color: #f44336;
+  border-radius: 50%;
+  position: absolute;
+  -webkit-animation: 0.8s opaque ease-in-out infinite both;
+  animation: 0.8s opaque ease-in-out infinite both;
+}
+
+.circle-loader > div:nth-child(1) {
+  top: -25px;
+  left: 0;
+}
+.circle-loader > div:nth-child(2) {
+  top: -17px;
+  left: 17px;
+  -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s;
+}
+.circle-loader > div:nth-child(3) {
+  top: 0;
+  left: 25px;
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
+}
+.circle-loader > div:nth-child(4) {
+  top: 17px;
+  left: 17px;
+  -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s;
+}
+.circle-loader > div:nth-child(5) {
+  top: 25px;
+  left: 0;
+  -webkit-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+}
+.circle-loader > div:nth-child(6) {
+  top: 17px;
+  left: -17px;
+  -webkit-animation-delay: 0.5s;
+  animation-delay: 0.5s;
+}
+.circle-loader > div:nth-child(7) {
+  top: 0;
+  left: -25px;
+  -webkit-animation-delay: 0.6s;
+  animation-delay: 0.6s;
+}
+.circle-loader > div:nth-child(8) {
+  top: -17px;
+  left: -17px;
+  -webkit-animation-delay: 0.7s;
+  animation-delay: 0.7s;
+}
+
+
+@-webkit-keyframes opaque {
+  0% {
+    opacity: 0.1;
+  }
+  40% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+@keyframes opaque {
+  0% {
+    opacity: 0.1;
+  }
+  40% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+
+@media only screen and (max-width: 968px) {
+  .flexbox > div {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 33.3333333%;
+    flex: 0 0 33.3333333%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .flexbox > div {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+  }
+}
+
+@media only screen and (max-width: 568px) {
+  .flexbox > div {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+  }
+}
+
 </style>
 </head>
 <body>
 
 <div id="map" style="width:100%;height:100%;">
 <div class="search">
-	<input type="text" id="address" autocomplete="off"><input type="button" id="search-btn" value="검색">
+	<input type="text" id="address" class="form-control" autocomplete="off"><input type="button" id="search-btn" class="btn btn-secondary" value="검색">
 </div>
 <div class="image-box">
 </div>
 <div id="listContainer">
 
 </div>
+<div id="loadingBox">
+	<div class="flexbox">
+		  <div>
+			    <div class="circle-loader">
+			      <div></div>
+			      <div></div>
+			      <div></div>
+			      <div></div>
+			      <div></div>
+			      <div></div>
+			      <div></div>
+			      <div></div>
+			    </div>
+		  </div>
+  </div>
 </div>
+<img src="./img/gps_icon.png" class="gpsIcon" onclick="myPosition()">
+</div>
+<input type="hidden" id="lat">
+<input type="hidden" id="lng">
 <script>
 
 
@@ -253,11 +448,15 @@ var map = new naver.maps.Map('map', {
 		    		uploadBtn.addEventListener('click', function(event){
 		    			/* var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		    			console.log(location) */
+		    			document.getElementById("loadingBox").style.display="block";
 		    		var lat = document.getElementById('latV').value;
 		    		var lng = document.getElementById('lngV').value;
 		    			//navigator.geolocation.getCurrentPosition(success, error);
-					    document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;  //이클립스에서는 풀기
-		    			//document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng; //실제 웹서버에서 실행
+		    			
+					    document.getElementById('imageFrm').action= "http://110.12.74.87:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
+					    
+					   /* document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng; */
+					   
 		    	       document.getElementById('imageFrm').submit(); 
 		    	    });
 		    		
@@ -335,7 +534,7 @@ var map = new naver.maps.Map('map', {
 			        + '$("#listContainer").html("'
 			        + '<div id=\'interBox\'>'
 		            + '<div class=\'scroll-box\'><ul id=\'realList\' style=\'list-style:none;margin:0;padding:0;\'></ul></div>'
-		            + '<input type=\'button\' value=\'닫기\' id=\'closeList\' onclick=\'closeList()\'>'	
+		            + '<input type=\'button\' value=\'닫기\' class= \'btn btn-primary\'id=\'closeList\' onclick=\'closeList()\'>'	
 		            + '</div>'	
 					+ '");'
 	        	+ '</SCRIPT' + '>'
@@ -833,7 +1032,7 @@ var map = new naver.maps.Map('map', {
 
 		map.setCursor('pointer');
 
-		function searchCoordinateToAddress(latlng) {
+		/* function searchCoordinateToAddress(latlng) {
 
 		 //infoWindow.close();
 
@@ -844,7 +1043,7 @@ var map = new naver.maps.Map('map', {
 		      naver.maps.Service.OrderType.ROAD_ADDR
 		    ].join(',')
 		  }, function(status, response) {
-		    if (status === naver.maps.Service.Status.ERROR) {
+		   if (status === naver.maps.Service.Status.ERROR) {
 		      if (!latlng) {
 		        return alert('ReverseGeocode Error, Please check latlng');
 		      }
@@ -855,9 +1054,9 @@ var map = new naver.maps.Map('map', {
 		        return console.log('ReverseGeocode Error, x:' + latlng.x + ', y:' + latlng.y);
 		      }
 		      return alert('ReverseGeocode Error, Please check latlng');
-		    }
+		    } 
 
-		   /*  var address = response.v2.address,
+		   var address = response.v2.address,
 		        htmlAddresses = [];
 
 		    if (address.jibunAddress !== '') {
@@ -866,18 +1065,18 @@ var map = new naver.maps.Map('map', {
 
 		    if (address.roadAddress !== '') {
 		        htmlAddresses.push('[도로명 주소] ' + address.roadAddress);
-		    } */
+		    } 
 
-		    /* infoWindow.setContent([
+		    infoWindow.setContent([
 		      '<div style="padding:10px;min-width:200px;line-height:150%;">',
 		      '<h4 style="margin-top:5px;">검색 좌표</h4><br />',
 		      htmlAddresses.join('<br />'),
 		      '</div>' 
-		    ].join('\n')); */
+		    ].join('\n')); 
 
 		    //infoWindow.open(map, latlng);
 		  });
-		}
+		} */
 		/* var searchMarker = new naver.maps.Marker({
 		    position: new naver.maps.LatLng(127.1052232, 37.3595099),
 		    map: map,
@@ -890,26 +1089,33 @@ var map = new naver.maps.Map('map', {
 		    },
 		    //draggable: true 드래그 가능
 		}); */
+		var chkS=true;
 		function searchAddressToCoordinate(address) {
 			 
 		  naver.maps.Service.geocode({
 		    query: address
 		  }, function(status, response) {
-		    if (status === naver.maps.Service.Status.ERROR) {
+			  
+		    /* if (status === naver.maps.Service.Status.ERROR) {
 		      if (!address) {
 		        return alert('Geocode Error, Please check address');
 		      }
 		      return alert('Geocode Error, address:' + address);
-		    }
+		    } */
 
 		    if (response.v2.meta.totalCount === 0) {
-		      return alert('No result.');
-		    }
+		    	if(chkS ==true){
+		    	chkS=false;
+		    	alert("검색결과가 없습니다");
+		    	}else{
+		    		chkS = true;
+		    	}
+		    }else{
 
 		    var htmlAddresses = [],
 		      item = response.v2.addresses[0],
 		      point = new naver.maps.Point(item.x, item.y);
-		    console.log(point);
+		   
 		    var marker = new naver.maps.Marker({
 			    position: new naver.maps.LatLng(point),
 			    map: map,
@@ -943,6 +1149,7 @@ var map = new naver.maps.Map('map', {
 
 		    map.setCenter(point);
 		  // infoWindow.open(map, point);
+		    }
 		  });
 		  
 		 
@@ -963,15 +1170,15 @@ var map = new naver.maps.Map('map', {
 		    if (keyCode === 13) { // Enter Key
 		      searchAddressToCoordinate($('#address').val());
 		    }
-		  });
+		  });  
 
 		  $('#search-btn').on('click', function(e) {
 		    e.preventDefault();
 
 		    searchAddressToCoordinate($('#address').val());
-		  });
+		  }); 
 
-		  //searchAddressToCoordinate('정자동 178-1');
+		 
 		}
 
 		naver.maps.onJSContentLoaded = initGeocoder;
@@ -1001,14 +1208,23 @@ function onSuccessGeolocation(position) {
 
 	    infowindow.open(map, center);
 	}
+	
+	var centerlat;
+	var centerlng;
 	    if (navigator.geolocation) {
 	    	
 	    	navigator.geolocation.getCurrentPosition(onSuccessGeolocation, onErrorGeolocation);       
 	         navigator.geolocation.watchPosition(
 	                 function(position) {
-	                	 document.getElementById("latV").value=position.coords.latitude;
-	                	 document.getElementById("lngV").value= position.coords.longitude;
-	                	// console.log("lat" + position.coords.latitude);
+	                	 document.getElementById("latV").value = position.coords.latitude;
+	                	 document.getElementById("lngV").value = position.coords.longitude;
+	                document.getElementById("lat").value = position.coords.latitude;
+	                document.getElementById("lng").value = position.coords.longitude;
+            	 	
+	            /*     console.log(latV);
+	                console.log(lngV); */
+	                	 
+	                	 // console.log("lat" + position.coords.latitude);
 	                	 //console.log("lng" + position.coords.longitude);
 	                	 var location = new naver.maps.LatLng(position.coords.latitude,
 	                             position.coords.longitude);
@@ -1045,7 +1261,13 @@ function onSuccessGeolocation(position) {
 	        infowindow.open(map, center);
 	    }
 //현재위치 표시END
-		
+
+function myPosition(){
+	var lng = document.getElementById("lng").value;
+	var lat = document.getElementById("lat").value;
+	p = new naver.maps.LatLng(lat, lng);
+	map.setCenter(p);
+}
 </script>
 </body>
 </html>
