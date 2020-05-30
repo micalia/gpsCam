@@ -151,4 +151,36 @@ public class ImginfoDAO {
 		return null;
 	}
 	
+	public ImgInfo infoGet(String num) {
+		int n = Integer.parseInt(num);
+		String SQL = "select * from gpscam.img_info where num = ?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, n);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				ImgInfo info = new ImgInfo();
+				info.setNum(rs.getInt(1));
+				info.setLatitude(rs.getString(2));
+				info.setLongitude(rs.getString(3));
+				info.setImg_path(rs.getString(4));
+				info.setTime(rs.getString(5));
+				return info;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	
 }

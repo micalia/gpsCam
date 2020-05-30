@@ -385,11 +385,11 @@ body{
 <div class="search">
 	<input type="text" id="address" class="form-control" autocomplete="off"><input type="button" id="search-btn" class="btn btn-secondary" value="검색">
 </div>
-<div class="image-box">
+<!-- <div class="image-box">
 </div>
 <div id="listContainer">
 
-</div>
+</div> -->
 <div id="loadingBox">
 	<div class="flexbox">
 		  <div>
@@ -410,6 +410,7 @@ body{
 </div>
 <input type="hidden" id="lat">
 <input type="hidden" id="lng">
+
 <script>
 
 
@@ -522,13 +523,28 @@ var map = new naver.maps.Map('map', {
 	        			+'}'
 	        		
 	        		+ 'ArrayBox.sort().reverse();'
-	        		+ 'for(i=0; i<ArrayBox.length; i++){'
+	        		
+	        		/* + 'for(i=0; i<ArrayBox.length; i++){'
 	        			+ '$("#realList").append("<li><div class=\'list-area\'>'
 	        					+ '<div class=\'img-area\'><img class=\'liimgstyle\' src=\'"+ ArrayBox[i][1] +"\'></div><span class=\'lidate-str\'>" + ArrayBox[i][0] + "</span></div></li>");'
-	        			+ '}' 
+	        			+ '}'  */
+	        			+ 'var newForm = document.createElement("form");'
+	        			+ 'newForm.name = "newForm";'
+	        			+ 'newForm.method = "post";'
+	        			+ 'newForm.action="list.jsp";'
+	        			
+	        			+ 'for(i=0; i<ArrayBox.length; i++){'
+	        				+ 'var input = document.createElement("input");'
+	        				+ 'input.setAttribute("type","hidden");'
+	        				+ 'input.setAttribute("name","num");'
+	        				+ 'input.setAttribute("value",ArrayBox[i][2]);'
+	        				+ 'newForm.appendChild(input);'
+	        				+ '}'
+	        				+ 'document.body.appendChild(newForm);'
+	        				+ 'newForm.submit();'
 	        		+ ' });'
 	        		+ '</SCRIPT' + '>'
-        		+ '<SCRIPT' + '>'
+        		/* + '<SCRIPT' + '>'
 			        + 'var listBox = document.getElementById("listContainer");'
 			        + 'listBox.style.display="block";'
 			        + '$("#listContainer").html("'
@@ -537,7 +553,7 @@ var map = new naver.maps.Map('map', {
 		            + '<input type=\'button\' value=\'닫기\' class= \'btn btn-primary\'id=\'closeList\' onclick=\'closeList()\'>'	
 		            + '</div>'	
 					+ '");'
-	        	+ '</SCRIPT' + '>'
+	        	+ '</SCRIPT' + '>' */
 	        	
 	            + '<SCRIPT' + '>'
 	            + 'function closeList(){document.getElementById("listContainer").style.display="none";'
@@ -954,16 +970,12 @@ var map = new naver.maps.Map('map', {
 		title: '',
 		icon: {
 		content: [
-			<%-- <img src="<%= imgInfo.getImg_path()%>" style="width:100px; height:100px;"> --%>
 		            '<div class="getShowM">',
-		          		<%-- '<span style="color:#4287f5;"><%= sCount%></span>', --%>
 		            '</div>'
-		            //<img src="" style="width:100px; height:100px;">
 		        ].join(''),
 		size: new naver.maps.Size(38, 58),
 		anchor: new naver.maps.Point(19, 58),
 		},
-		//draggable: true 드래그 가능
 	});
 	
 	recognizer.add(marker);
@@ -971,19 +983,15 @@ var map = new naver.maps.Map('map', {
 	var marker = new naver.maps.Marker({
 		position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
 		map: map,
-		title: '<%= imgInfo.getTime().substring(0,19)%>,<%= imgInfo.getImg_path()%>',
+		title: '<%= imgInfo.getTime().substring(0,19)%>,<%= imgInfo.getImg_path()%>,<%= imgInfo.getNum()%>',
 		icon: {
 		content: [
-			<%-- <img src="<%= imgInfo.getImg_path()%>" style="width:100px; height:100px;"> --%>
 		            '<div class="getShowM">',
-		          		<%-- '<span style="color:#4287f5;"><%= sCount%></span>', --%>
 		            '</div>'
-		            //<img src="" style="width:100px; height:100px;">
 		        ].join(''),
 		size: new naver.maps.Size(38, 58),
 		anchor: new naver.maps.Point(19, 58),
 		},
-		//draggable: true 드래그 가능
 	});
 	
 	recognizer.add(marker);
@@ -993,22 +1001,20 @@ var map = new naver.maps.Map('map', {
 		
 		<%
 		for (int j = 0; j < equalPos.size(); j++) {
-		//System.out.println(equalPos.get(j).getTime());//이미지 경로
+		
 		%>
 		var marker = new naver.maps.Marker({
 			position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
 			map: map,
-			title: '<%= equalPos.get(j).getTime().substring(0,19)%>,<%= equalPos.get(j).getImg_path()%>',
+			title: '<%= equalPos.get(j).getTime().substring(0,19)%>,<%= equalPos.get(j).getImg_path()%>,<%= equalPos.get(j).getNum()%>',
 			icon: {
 			    content: [
 			                '<div class="getShowM">',
-			                <%-- '<span style="color:#4287f5;"><%= sCount%></span>', --%>
 			                '</div>'
 			            ].join(''),
 			    size: new naver.maps.Size(38, 58),
 			    anchor: new naver.maps.Point(19, 58),
 			},
-			//draggable: true 드래그 가능
 		});
 		
 		recognizer.add(marker);
@@ -1187,10 +1193,20 @@ var map = new naver.maps.Map('map', {
 
 		//현재위치 표시START
 function onSuccessGeolocation(position) {
-	var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
+			<%
+			String rlat = request.getParameter("lat");
+			String rlng = request.getParameter("lng");
+			
+			if(rlat != null && rlng != null){ %>
+			var location = new naver.maps.LatLng(<%=rlat%>, <%=rlng%>);
+			 map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
+			    map.setZoom(19); // 지도의 줌 레벨을 변경합니다.
+		<%}else{%> 
+	var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);		
 	    map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
 	    map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
+			<%}%> 
+
 
 }
 
