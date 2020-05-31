@@ -6,6 +6,7 @@
 <%@page import="java.io.File"%>
 <%@ page import="org.json.simple.JSONObject"%>
 <%@ page import="imgInfo.ImginfoDAO"%>
+<%@ page import="net.coobird.thumbnailator.Thumbnails"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,16 +41,36 @@ if(!Folder.exists()) {
 	} 
 }
 
+String thumbnailFolder = "thumbnail/" + time;
+ServletContext context2 = getServletContext();
+String thumbnailPath = context2.getRealPath(thumbnailFolder);
+
+File thumbFolder = new File(thumbnailPath);
+
+if(!thumbFolder.exists()) {
+	try{
+		thumbFolder.mkdir(); //폴더 생성합니다.
+        } 
+        catch(Exception e){
+	    e.getStackTrace();
+	} 
+}
+
 int size = 10*1024*1024;
 String imgName = "";
 
 try{
     MultipartRequest multi=new MultipartRequest(request,uploadPath,size,"utf-8",new DefaultFileRenamePolicy());
-		
+	
+    
     Enumeration files = multi.getFileNames();
     String img = (String)files.nextElement();
     imgName = multi.getFilesystemName(img);
     String fullPath = "/project/upload/" + time + "/" + imgName;
+    
+    String originPath = uploadPath + "/" + imgName;
+   String saveThumbPath = thumbnailPath + "/" + imgName;
+   	Thumbnails.of(originPath).size(180,180).toFile(saveThumbPath);
     
     ImginfoDAO imginfoDAO = new ImginfoDAO();
     imginfoDAO.upImgInfo(lat, lng, fullPath);
@@ -62,7 +83,8 @@ try{
 
 <script>
 	//location.href="https://54.180.24.137:8443/project/historyView.jsp";
-	location.href="https://110.12.74.87:8443/project/historyView.jsp";
+	//location.href="https://110.12.74.87:8443/project/historyView.jsp";
+	location.href="https://localhost:8443/project/historyView.jsp";
 </script>
 </body>
 </html>

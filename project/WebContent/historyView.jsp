@@ -92,7 +92,7 @@ body{
 #map{
 	z-index:1;
 }
-.getShowM{
+/* .getShowM{
   background: #4287f5;
   width: 34px;
   height: 34px;
@@ -102,7 +102,7 @@ body{
   position: absolute;
   top: 41px;
   left: 2px;
-}
+} */
 #interBox{
 	width:91%;
 	height:96%;
@@ -135,14 +135,14 @@ body{
 	display:none;
 }
 .liimgstyle{
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width:100%;
-            height:auto;
-          /*   width: 815px;
-            height: 815px; */
+     overflow: hidden;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width:100%;
+     height:auto;
+   /*   width: 815px;
+     height: 815px; */
 }
 .list-area{
 	/* padding-left:17px;
@@ -377,6 +377,12 @@ body{
   }
 }
 
+.pinMarker{
+	width: 20px;
+    position: absolute;
+    top: 18px;
+    left: 9px;
+}
 </style>
 </head>
 <body>
@@ -385,9 +391,9 @@ body{
 <div class="search">
 	<input type="text" id="address" class="form-control" autocomplete="off"><input type="button" id="search-btn" class="btn btn-secondary" value="검색">
 </div>
-<!-- <div class="image-box">
+<div class="image-box">
 </div>
-<div id="listContainer">
+<!-- <div id="listContainer">
 
 </div> -->
 <div id="loadingBox">
@@ -415,7 +421,7 @@ body{
 
 
 var map = new naver.maps.Map('map', {
-	zoom: 13,
+	zoom: 20,
 	logoControlOptions: {
 		position: naver.maps.Position.TOP_LEFT
 		},
@@ -454,7 +460,8 @@ var map = new naver.maps.Map('map', {
 		    		var lng = document.getElementById('lngV').value;
 		    			//navigator.geolocation.getCurrentPosition(success, error);
 		    			
-					    document.getElementById('imageFrm').action= "http://110.12.74.87:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
+					    //document.getElementById('imageFrm').action= "http://110.12.74.87:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
+					    document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
 					    
 					   /* document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng; */
 					   
@@ -533,6 +540,11 @@ var map = new naver.maps.Map('map', {
 	        			+ 'newForm.method = "post";'
 	        			+ 'newForm.action="list.jsp";'
 	        			
+	        			+ 'var zoomVal = document.createElement("input");'
+	        			+ 'zoomVal.setAttribute("type","hidden");'
+        				+ 'zoomVal.setAttribute("name","zoom");'
+        				+ 'zoomVal.setAttribute("value",map.getZoom());'
+        				+ 'newForm.appendChild(zoomVal);'
 	        			+ 'for(i=0; i<ArrayBox.length; i++){'
 	        				+ 'var input = document.createElement("input");'
 	        				+ 'input.setAttribute("type","hidden");'
@@ -886,7 +898,7 @@ var map = new naver.maps.Map('map', {
 		};
 
 		var recognizer = new MarkerOverlapRecognizer({
-		    highlightRect: false,
+		    highlightRect: true,
 		    tolerance: 17
 		});
 		recognizer.setMap(map);
@@ -970,8 +982,9 @@ var map = new naver.maps.Map('map', {
 		title: '',
 		icon: {
 		content: [
-		            '<div class="getShowM">',
-		            '</div>'
+					'<img src="./img/pinmarker.png" class="pinMarker">'
+		            /* '<div class="getShowM">',
+		            '</div>' */
 		        ].join(''),
 		size: new naver.maps.Size(38, 58),
 		anchor: new naver.maps.Point(19, 58),
@@ -986,8 +999,9 @@ var map = new naver.maps.Map('map', {
 		title: '<%= imgInfo.getTime().substring(0,19)%>,<%= imgInfo.getImg_path()%>,<%= imgInfo.getNum()%>',
 		icon: {
 		content: [
-		            '<div class="getShowM">',
-		            '</div>'
+					'<img src="./img/pinmarker.png" class="pinMarker">'
+		            /* '<div class="getShowM">',
+		            '</div>' */
 		        ].join(''),
 		size: new naver.maps.Size(38, 58),
 		anchor: new naver.maps.Point(19, 58),
@@ -1009,8 +1023,9 @@ var map = new naver.maps.Map('map', {
 			title: '<%= equalPos.get(j).getTime().substring(0,19)%>,<%= equalPos.get(j).getImg_path()%>,<%= equalPos.get(j).getNum()%>',
 			icon: {
 			    content: [
-			                '<div class="getShowM">',
-			                '</div>'
+			    			'<img src="./img/pinmarker.png" class="pinMarker">'
+			                /* '<div class="getShowM">',
+			                '</div>' */
 			            ].join(''),
 			    size: new naver.maps.Size(38, 58),
 			    anchor: new naver.maps.Point(19, 58),
@@ -1196,20 +1211,21 @@ function onSuccessGeolocation(position) {
 			<%
 			String rlat = request.getParameter("lat");
 			String rlng = request.getParameter("lng");
-			
-			if(rlat != null && rlng != null){ %>
+			String zoom = request.getParameter("zoom");
+			if(rlat != null && rlng != null && zoom != null){ %>
 			var location = new naver.maps.LatLng(<%=rlat%>, <%=rlng%>);
 			 map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
-			    map.setZoom(19); // 지도의 줌 레벨을 변경합니다.
+			    map.setZoom(<%=zoom%>); // 지도의 줌 레벨을 변경합니다.
+
 		<%}else{%> 
 	var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);		
 	    map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
 	    map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
+	   
 			<%}%> 
 
 
 }
-
 	function onSuccessGeolocation2(position) {
 		var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
