@@ -898,7 +898,7 @@ var map = new naver.maps.Map('map', {
 		};
 
 		var recognizer = new MarkerOverlapRecognizer({
-		    highlightRect: true,
+		    highlightRect: false,
 		    tolerance: 17
 		});
 		recognizer.setMap(map);

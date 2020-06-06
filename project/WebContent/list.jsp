@@ -42,6 +42,9 @@ body{
 .cover{
 	object-fit:cover;
 }
+.cover:hover{
+	cursor:pointer;
+}
 .listBox td{
 	padding:0px;
 }
@@ -79,7 +82,7 @@ body{
 	for(int i=0; i < list.size(); i++){%>
 		<tr>
 			<td>	
-				<img class="object cover"src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>">		
+				<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
 			</td>
 			<td class="infotd">
 				<span><%= list.get(i).getTime().substring(0,19)%></span>
@@ -93,6 +96,32 @@ body{
 <div class="image-box">
 </div>
 <script>
+function goImginfo(gonum){
+	var newForm = document.createElement("form");
+	newForm.name = "newForm";
+	newForm.method = "post";
+	newForm.action="imginfo.jsp";
+	
+	var num = document.createElement("input");
+	num.setAttribute("type","hidden");
+	num.setAttribute("name","num");
+	num.setAttribute("value",gonum);
+	newForm.appendChild(num);
+	
+<%
+	for(int i=0; i < list.size(); i++){
+%>
+	var backnum = document.createElement("input");
+	backnum.setAttribute("type","hidden");
+	backnum.setAttribute("name","backnum");
+	backnum.setAttribute("value",<%= list.get(i).getNum() %>);
+	newForm.appendChild(backnum);
+	
+	<%}%>
+	
+	document.body.appendChild(newForm);
+	newForm.submit();
+}
 function backToMap(){
 	var newForm = document.createElement("form");
 	newForm.name = "newForm";
