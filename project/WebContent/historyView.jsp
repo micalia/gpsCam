@@ -60,7 +60,7 @@ body{
 .image-box{
 	width:100%;
 	height:100%;
-	background:rgba(0,0,0,0.5);
+	background:rgba(0,0,0,0.9);
 	padding-top:80px;
 	z-index:2;
 	position:absolute;
@@ -74,7 +74,7 @@ body{
 .imgContainer{
 	width:316px;
 	margin:0 auto;
-	/* border:3px solid yellow; */
+	border:3px solid yellow;
 	height:300px;
 	line-height:285px;
 	text-align:center;
@@ -383,6 +383,25 @@ body{
     top: 18px;
     left: 9px;
 }
+
+#img-subject{
+	margin: 0 auto;
+    display: block;
+    margin-top: 19px;
+    width: 316px;
+}
+#img-content{
+	margin: 0 auto;
+    display: block;
+    margin-top: 19px;
+    width: 316px;
+}
+
+.textcountbox{
+	overflow:hidden;
+	width: 316px;
+	margin:0 auto;
+}
 </style>
 </head>
 <body>
@@ -444,7 +463,22 @@ var map = new naver.maps.Map('map', {
 
 		    reader.onload = function (e) {
 		    		$(".image-box").html('<div id="uploadBox"><div class="imgContainer"><img id ="blah" src="'+ e.target.result +'" class="uploadImg"></div>'+
-		    									'<div class="btn-box"><button id="cancelUp" class="btn btn-danger btn-lg">취소</button><span class="marSpan"></span><button id="uploadBtn" class="btn btn-primary btn-lg">확인</button></div></div>');
+		    						'<input type="text" id="img-subject" class="form-control" placeholder="제목 *검색기능에 사용됩니다" maxlength="20">'+
+		    						'<div class="textcountbox"><textarea id="img-content" class="form-control" placeholder="내용 100자 제한 *검색기능에 사용됩니다" maxlength="100"></textarea>'+
+		    						'<span style="color:#aaa;float:right;" id="counter">(0 / 200)</span></div>' +
+		    				'<div class="btn-box"><button id="cancelUp" class="btn btn-danger btn-lg">취소</button><span class="marSpan"></span><button id="uploadBtn" class="btn btn-primary btn-lg">확인</button></div></div>' +
+		    				'<SCRIPT' + '>' +
+		    				
+		    				'$("#img-content").keyup(function (e){' +
+		    				    'var content = $(this).val();' +
+		    				   ' $("#counter").html("("+content.length+" / 100)");' + //글자수 실시간 카운팅
+		    				    'if (content.length > 100){' +
+		    				       ' alert("최대 100자까지 입력 가능합니다.");' +
+		    				        '$(this).val(content.substring(0, 100));' +
+		    				        '$("#counter").html("(100 / 100)");' +
+		    				    '}' +
+		    				'});' +
+		    				'</SCRIPT' + '>');
 		    		var cancelUp = document.getElementById('cancelUp');
 		    		cancelUp.addEventListener('click', function(event){
 		    	        document.getElementsByClassName("image-box")[0].style.display="none";
@@ -1132,7 +1166,10 @@ var map = new naver.maps.Map('map', {
 		    		chkS = true;
 		    	}
 		    }else{
-
+			
+		    	if(document.getElementById("searchMarker")){
+		    		$("#searchMarker").remove();
+		    	}
 		    var htmlAddresses = [],
 		      item = response.v2.addresses[0],
 		      point = new naver.maps.Point(item.x, item.y);
@@ -1142,7 +1179,7 @@ var map = new naver.maps.Map('map', {
 			    map: map,
 			    icon: {
 			        content: [
-			                    '<img src="./img/searchMarker.png" class="searchMarker">',
+			                    '<img src="./img/searchMarker.png" id="searchMarker" class="searchMarker">',
 			                ].join(''),
 			       // size: new naver.maps.Size(38, 58),
 			        //anchor: new naver.maps.Point(19, 58),
@@ -1300,6 +1337,8 @@ function myPosition(){
 	p = new naver.maps.LatLng(lat, lng);
 	map.setCenter(p);
 }
+
+
 </script>
 </body>
 </html>

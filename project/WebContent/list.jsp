@@ -20,7 +20,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<title>Insert title here</title>
+<title>history view</title>
 <style>
 html,body{
 	height:100%;
@@ -108,6 +108,11 @@ function goImginfo(gonum){
 	num.setAttribute("value",gonum);
 	newForm.appendChild(num);
 	
+	var zoomVal = document.createElement("input");
+	zoomVal.setAttribute("type","hidden");
+	zoomVal.setAttribute("name","zoom");
+	zoomVal.setAttribute("value",<%= zoom%>);
+	newForm.appendChild(zoomVal);
 <%
 	for(int i=0; i < list.size(); i++){
 %>

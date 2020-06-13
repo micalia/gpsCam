@@ -19,7 +19,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<title>Insert title here</title>
+<title>history view</title>
 <style>
 	html,body{
 		height:100%;
@@ -66,7 +66,11 @@ ImgInfo imgInfo = imginfoDAO.infoGet(num);
 
 String dbImgPath = imgInfo.getImg_path();
 //System.out.println(imgInfo.getImg_path());
-String imgPath = "E:/jspProject/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps" + dbImgPath; 
+ServletContext context = getServletContext();
+String modifyPath = dbImgPath.replace("project","");
+String imgPath = context.getRealPath(modifyPath);
+
+//String imgPath = "E:/jspProject/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps" + dbImgPath; 
 
 File jpegFile = new File(imgPath);
 String exifImgPart = "";
@@ -130,10 +134,11 @@ String exifImgPart = "";
 %>
 </table>
 	</div>
-	<input type="button" class="btn btn-primary backBtn" onclick="history.back()" value="리스트로 돌아가기">
+	<input type="button" class="btn btn-primary backBtn" onclick="backPage()" value="리스트로 돌아가기">
 </div>
 <%
 String[] backNum = request.getParameterValues("backnum");
+String zoom = request.getParameter("zoom");
 %>
 <script>
 function backPage(){
@@ -142,6 +147,11 @@ function backPage(){
 	newForm.method = "post";
 	newForm.action="list.jsp";
 	
+	var zoomVal = document.createElement("input");
+	zoomVal.setAttribute("type","hidden");
+	zoomVal.setAttribute("name","zoom");
+	zoomVal.setAttribute("value",<%= zoom%>);
+	newForm.appendChild(zoomVal);
 	<%
 	for(int i=0; i < backNum.length; i++){
 	%>
