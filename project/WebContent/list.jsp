@@ -50,6 +50,7 @@ body{
 }
 .infotd{
 	width:100%;
+	vertical-align:baseline;
 }
 .gomap{
 	width:100%;
@@ -85,7 +86,9 @@ body{
 				<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
 			</td>
 			<td class="infotd">
-				<span><%= list.get(i).getTime().substring(0,19)%></span>
+				<span>날짜 : <%= list.get(i).getTime().substring(0,19)%></span><br>
+				<span>제목 : <%= list.get(i).getSubject()%></span><br>
+				<span>내용 : <%= list.get(i).getContent()%></span>
 			</td>
 		</tr>
 		<%}%>

@@ -20,6 +20,8 @@
 request.setCharacterEncoding("UTF-8"); 
 String lat = request.getParameter("lat");
 String lng = request.getParameter("lng");
+String sub = request.getParameter("sub");
+String con = request.getParameter("con");
 
 java.util.Calendar cal = java.util.Calendar.getInstance();
 String year = Integer.toString(cal.get ( cal.YEAR ));
@@ -58,7 +60,6 @@ if(!thumbFolder.exists()) {
 
 int size = 10*1024*1024;
 String imgName = "";
-
 try{
     MultipartRequest multi=new MultipartRequest(request,uploadPath,size,"utf-8",new DefaultFileRenamePolicy());
 	
@@ -73,7 +74,16 @@ try{
    	Thumbnails.of(originPath).size(180,180).toFile(saveThumbPath);
     
     ImginfoDAO imginfoDAO = new ImginfoDAO();
-    imginfoDAO.upImgInfo(lat, lng, fullPath);
+if(lat == null && lng == null){
+%>
+	<script>
+		alert("오류가 발생했습니다");
+		window.history.back();
+	</script>
+<%
+}else{
+    imginfoDAO.upImgInfo(lat, lng, fullPath, sub, con);
+}
 }catch(Exception e){
     e.printStackTrace();
 }
@@ -86,5 +96,6 @@ try{
 	//location.href="https://110.12.74.87:8443/project/historyView.jsp";
 	location.href="https://localhost:8443/project/historyView.jsp";
 </script>
+
 </body>
 </html>

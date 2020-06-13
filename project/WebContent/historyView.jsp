@@ -48,12 +48,7 @@ body{
   -webkit-transform: scale( 0.2);-moz-transform: scale( 0.2 );-o-transform: scale( 0.2 );-ms-transform: scale( 0.2 );transform: scale( 0.2 );
   }
 }
-.camIcon{
-	width:60px;
-	position:absolute;
-	bottom:87px;
-	right:14px;
-}
+
 #img{
 	display:none;
 }
@@ -62,7 +57,7 @@ body{
 	height:100%;
 	background:rgba(0,0,0,0.9);
 	padding-top:80px;
-	z-index:2;
+	z-index:3;
 	position:absolute;
 	display:none;
 }
@@ -84,7 +79,7 @@ body{
 }
 .btn-box{
 	text-align:center;
-	margin-top:57px;
+	margin-top:17px;
 }
 .marSpan{
 	margin:38px;
@@ -210,6 +205,13 @@ body{
 	z-index:2;
 	left:14px;
 	bottom:82px;
+}
+.camIcon{
+	width:60px;
+	position:absolute;
+	z-index:2;
+	bottom:87px;
+	right:14px;
 }
 #loadingBox{
 	width:100%;
@@ -395,6 +397,7 @@ body{
     display: block;
     margin-top: 19px;
     width: 316px;
+    height:136px;
 }
 
 .textcountbox{
@@ -432,13 +435,23 @@ body{
   </div>
 </div>
 <img src="./img/gps_icon.png" class="gpsIcon" onclick="myPosition()">
+<form id="imageFrm" method="post" enctype="multipart/form-data">
+		<label for="img"><img src="./img/cam_icon.png" id="camIcon" class="camIcon"></label>
+		<input type="file" name="img" accept="image/*" id="img">
+		<input type="hidden" id="latV" name ="latitude" value="">
+		<input type="hidden" id="lngV" name ="longitude" value=""></form>
 </div>
 <input type="hidden" id="lat">
 <input type="hidden" id="lng">
 
 <script>
 
+var camIcon = document.getElementById("img");
 
+camIcon.addEventListener('change', function(event){
+	document.getElementsByClassName("image-box")[0].style.display="block";
+	readURL(document.getElementById('img'));
+});
 var map = new naver.maps.Map('map', {
 	zoom: 20,
 	logoControlOptions: {
@@ -451,20 +464,20 @@ var map = new naver.maps.Map('map', {
 	
 
 	    
-	var locationBtnHtml = '<form id="imageFrm" method="post" enctype="multipart/form-data"> \n'
+	/* var locationBtnHtml = '<form id="imageFrm" method="post" enctype="multipart/form-data"> \n'
 		+ '<label for="img"><img src="./img/cam_icon.png" class="camIcon"></label> \n'
 		+ '<input type="file" name="img" accept="image/*" id="img">'
 		+ '<input type="hidden" id="latV" name ="latitude" value="">'
 		+ '<input type="hidden" id="lngV" name ="longitude" value=""></form>'; 
-	//camera 찍으면 미리보기 보여주기  START
+	//camera 찍으면 미리보기 보여주기  START */
 		function readURL(input) {
 		    if (input.files && input.files[0]) {
 		    var reader = new FileReader();
 
 		    reader.onload = function (e) {
 		    		$(".image-box").html('<div id="uploadBox"><div class="imgContainer"><img id ="blah" src="'+ e.target.result +'" class="uploadImg"></div>'+
-		    						'<input type="text" id="img-subject" class="form-control" placeholder="제목 *검색기능에 사용됩니다" maxlength="20">'+
-		    						'<div class="textcountbox"><textarea id="img-content" class="form-control" placeholder="내용 100자 제한 *검색기능에 사용됩니다" maxlength="100"></textarea>'+
+		    						'<input type="text" id="img-subject" name="subject" class="form-control" placeholder="제목 *검색기능에 사용됩니다" maxlength="20">'+
+		    						'<div class="textcountbox"><textarea id="img-content" name="content" class="form-control" placeholder="내용 100자 제한 *검색기능에 사용됩니다" maxlength="100"></textarea>'+
 		    						'<span style="color:#aaa;float:right;" id="counter">(0 / 200)</span></div>' +
 		    				'<div class="btn-box"><button id="cancelUp" class="btn btn-danger btn-lg">취소</button><span class="marSpan"></span><button id="uploadBtn" class="btn btn-primary btn-lg">확인</button></div></div>' +
 		    				'<SCRIPT' + '>' +
@@ -489,15 +502,26 @@ var map = new naver.maps.Map('map', {
 		    		uploadBtn.addEventListener('click', function(event){
 		    			/* var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		    			console.log(location) */
-		    			document.getElementById("loadingBox").style.display="block";
 		    		var lat = document.getElementById('latV').value;
 		    		var lng = document.getElementById('lngV').value;
+		    		var sub = document.getElementById('img-subject').value;
+		    		var con = document.getElementById('img-content').value;
+		    		if(sub == ""){
+		    			alert("제목을 입력해주세요");
+		    			document.getElementById('img-subject').focus();
+		    			return false;
+		    		}else if(con == ""){
+		    			alert("내용을 입력해주세요");
+		    			document.getElementById('img-content').focus();
+		    			return false;
+		    		}
+		    			document.getElementById("loadingBox").style.display="block";
 		    			//navigator.geolocation.getCurrentPosition(success, error);
 		    			
 					    //document.getElementById('imageFrm').action= "http://110.12.74.87:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
-					   // document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
+					    document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con;
 					    
-					   document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng; 
+					   //document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng; 
 					   
 		    	       document.getElementById('imageFrm').submit(); 
 		    	    });
@@ -509,7 +533,7 @@ var map = new naver.maps.Map('map', {
 		}
 		//camera 찍으면 미리보기 보여주기  END	
 	
-		//camera아이콘 위치 START
+		/* //camera아이콘 위치 START
 		naver.maps.Event.once(map, 'init_stylemap', function() {
 	    //customControl 객체 이용하기
 	    var customControl = new naver.maps.CustomControl(locationBtnHtml, {
@@ -527,7 +551,7 @@ var map = new naver.maps.Map('map', {
 
 	});
 		//camera아이콘 위치 END
-		
+		 */
 		
 	//마크 겹침 처리 START
 	var MarkerOverlapRecognizer = function(opts) { //마커가 겹쳐지는걸 인식함.

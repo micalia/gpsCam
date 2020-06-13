@@ -6,6 +6,8 @@ public class ImgInfo {
 	private String longitude;
 	private String img_path;
 	private String time;
+	private String subject;
+	private String content;
 	
 	public int getNum() {
 		return num;
@@ -36,6 +38,18 @@ public class ImgInfo {
 	}
 	public void setTime(String time) {
 		this.time = time;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
 	}
 	
 	

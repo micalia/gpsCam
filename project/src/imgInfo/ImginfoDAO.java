@@ -32,8 +32,8 @@ public class ImginfoDAO {
 	 	   }
 	     }
 		
-	public int upImgInfo(String lat, String lng, String path) {
-		String SQL = "insert into gpscam.img_info(latitude, longitude, img_path, time) values (?, ?, ?, now())";
+	public int upImgInfo(String lat, String lng, String path, String sub, String con) {
+		String SQL = "insert into gpscam.img_info(latitude, longitude, img_path, time, subject, content) values (?, ?, ?, now(), ?, ?)";
 		try {
 			conn = pool.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
@@ -41,6 +41,8 @@ public class ImginfoDAO {
 			pstmt.setString(1, lat);
 			pstmt.setString(2, lng);
 			pstmt.setString(3, path);
+			pstmt.setString(4, sub);
+			pstmt.setString(5, con);
 			
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
@@ -170,6 +172,8 @@ public class ImginfoDAO {
 				info.setLongitude(rs.getString(3));
 				info.setImg_path(rs.getString(4));
 				info.setTime(rs.getString(5));
+				info.setSubject(rs.getString(6));
+				info.setContent(rs.getString(7));
 				return info;
 			}
 		} catch (Exception e) {
