@@ -188,5 +188,32 @@ public class ImginfoDAO {
 		return null;
 	}
 	
-	
+	public ArrayList<ImgInfo> search(String search) {
+		String sql = "SELECT * FROM gpscam.img_info where subject like ? or content like ?";
+		ArrayList<ImgInfo> list = new ArrayList<ImgInfo>();
+		try {
+			conn = pool.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%" + search + "%");
+			pstmt.setString(2, "%" + search + "%");
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ImgInfo imgInfo = new ImgInfo();
+			
+				imgInfo.setNum(rs.getInt(1));
+				imgInfo.setLatitude(rs.getString(2));
+				imgInfo.setLongitude(rs.getString(3));
+				imgInfo.setImg_path(rs.getString(4));
+				imgInfo.setTime(rs.getString(5));
+				imgInfo.setSubject(rs.getString(6));
+				imgInfo.setContent(rs.getString(7));
+				list.add(imgInfo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.freeConnection(conn);
+		}
+		return list;
+	}
 }

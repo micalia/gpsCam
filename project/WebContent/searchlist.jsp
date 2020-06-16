@@ -4,15 +4,12 @@
 <%@ page import="imgInfo.ImgInfo" %>
 <%@ page import="imgInfo.ImginfoDAO" %>
 <%
-	String zoom = request.getParameter("zoom");
-	ArrayList<ImgInfo> list = new ArrayList<ImgInfo>();
-	String[] num = request.getParameterValues("num");
+	request.setCharacterEncoding("UTF-8");
+	String search = request.getParameter("search");
 	ImginfoDAO imginfoDAO = new ImginfoDAO();
 	
-	for(int i=0; i < num.length; i++){
-		ImgInfo info = imginfoDAO.infoGet(num[i]);
-		list.add(info);
-	}
+	ArrayList<ImgInfo> list = imginfoDAO.search(search);
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -238,11 +235,6 @@ function goImginfo(gonum){
 	num.setAttribute("value",gonum);
 	newForm.appendChild(num);
 	
-	var zoomVal = document.createElement("input");
-	zoomVal.setAttribute("type","hidden");
-	zoomVal.setAttribute("name","zoom");
-	zoomVal.setAttribute("value",<%= zoom%>);
-	newForm.appendChild(zoomVal);
 <%
 	for(int i=0; i < list.size(); i++){
 %>
@@ -262,23 +254,6 @@ function backToMap(){
 	newForm.name = "newForm";
 	newForm.method = "post";
 	newForm.action="historyView.jsp";
-
-	var zoom = document.createElement("input");
-	zoom.setAttribute("type","hidden");
-	zoom.setAttribute("name","zoom");
-	zoom.setAttribute("value",<%= zoom%>);
-	newForm.appendChild(zoom);
-	
-	var input = document.createElement("input");
-	input.setAttribute("type","hidden");
-	input.setAttribute("name","lat");
-	input.setAttribute("value",<%= list.get(0).getLatitude()%>);
-	newForm.appendChild(input);
-	var input2 = document.createElement("input");
-	input2.setAttribute("type","hidden");
-	input2.setAttribute("name","lng");
-	input2.setAttribute("value",<%= list.get(0).getLongitude()%>);
-	newForm.appendChild(input2);
 	
 	document.body.appendChild(newForm);
 	newForm.submit();

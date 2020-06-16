@@ -204,13 +204,13 @@ body{
 	position: absolute;
 	z-index:2;
 	left:14px;
-	bottom:82px;
+	bottom:36px;
 }
 .camIcon{
 	width:60px;
 	position:absolute;
 	z-index:2;
-	bottom:87px;
+	bottom:41px;
 	right:14px;
 }
 #loadingBox{
@@ -405,19 +405,85 @@ body{
 	width: 316px;
 	margin:0 auto;
 }
+#topBar{
+	background-color: black;
+	position: absolute;
+	z-index:2;
+	width:100%;
+	height:48px;
+	display:table;
+}
+.titleName{
+	color:white;
+	display:table-cell;
+	vertical-align:middle;
+	font-size:24px;
+	padding-left:11px;
+	width:100%;
+}
+#searchBox{
+	height:100%;
+	position:relative;
+	width:45px;
+	float:right;
+}
+#searchIcon{
+	position:absolute;
+	max-width:100%;
+	max-height:100%;
+	width:auto;
+	height:auto;
+	margin:auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+#changeSearch{
+	display: table-cell;
+    vertical-align: middle;
+    width:100%;
+}
+.searchStyle{
+    border-radius: 0px;
+}
+#backFlow{
+    width: 39px;
+}
+.inlineBox{
+    height: 100%;
+    display:flex;
+}
+#backFlow{
+    height: 100%;
+    position: relative;
+    width:49px;
+}
+.backArrowCss{
+	position:absolute;
+	max-width:100%;
+	max-height:100%;
+	width:24px;
+	height:auto;
+	margin:auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+#searchModeBox{
+	position:absolute;
+	z-index:2;
+	height:100%;
+	width:100%;
+	background:rgba(0,0,0,0.9);
+}
+
 </style>
 </head>
 <body>
-
-<div id="map" style="width:100%;height:100%;">
-<div class="search">
-	<input type="text" id="address" class="form-control" autocomplete="off"><input type="button" id="search-btn" class="btn btn-secondary" value="검색">
-</div>
-<div class="image-box">
-</div>
-<!-- <div id="listContainer">
-
-</div> -->
+<div id="topBar"><div id="changeSearch"><span class="titleName">History View</span></div><div id="searchBox" onclick="changeSearch()"><img src="./img/searchIcon.png" id="searchIcon"></div></div>
+<div class="image-box"></div>
 <div id="loadingBox">
 	<div class="flexbox">
 		  <div>
@@ -434,12 +500,21 @@ body{
 		  </div>
   </div>
 </div>
+<div id="map" style="width:100%;height:100%;">
+<!-- <div class="search"> 2020-06-14 검색바 위로 뺄거임. 일단 주석 
+	<input type="text" id="address" class="form-control" autocomplete="off"><input type="button" id="search-btn" class="btn btn-secondary" value="검색">
+</div> -->
+<!-- <div id="listContainer">
+
+</div> -->
+
 <img src="./img/gps_icon.png" class="gpsIcon" onclick="myPosition()">
 <form id="imageFrm" method="post" enctype="multipart/form-data">
 		<label for="img"><img src="./img/cam_icon.png" id="camIcon" class="camIcon"></label>
 		<input type="file" name="img" accept="image/*" id="img">
 		<input type="hidden" id="latV" name ="latitude" value="">
 		<input type="hidden" id="lngV" name ="longitude" value=""></form>
+		<div id="searchModeBox" onclick="backFlow()" style="display:none;"></div>
 </div>
 <input type="hidden" id="lat">
 <input type="hidden" id="lng">
@@ -1362,7 +1437,35 @@ function myPosition(){
 	map.setCenter(p);
 }
 
+function changeSearch(){
+	$("#changeSearch").html("<div class='inlineBox'><div id='backFlow' onclick='backFlow()'><img src='./img/backArrow.png' class='backArrowCss'></div><input type='text' id='searchInput' class='form-control searchStyle' placeholder='검색' maxlength='20'></div>");
+	document.getElementById("searchInput").focus();
+	document.getElementById("searchModeBox").style.display="block";
+	document.getElementById("searchBox").setAttribute("onclick", "realSearch()");
+}
 
+function backFlow(){
+	$("#changeSearch").empty();
+	$("#changeSearch").html("<span class='titleName'>History View</span>");
+	document.getElementById("searchModeBox").style.display="none";
+	document.getElementById("searchBox").setAttribute("onclick", "changeSearch()");
+}
+
+function realSearch(){
+	var newForm = document.createElement("form");
+	newForm.name = "newForm";
+	newForm.method = "post";
+	newForm.action="searchlist.jsp";
+	
+	var searchVal = document.createElement("input");
+	searchVal.setAttribute("type","hidden");
+	searchVal.setAttribute("name","search");
+	searchVal.setAttribute("value", document.getElementById("searchInput").value);
+	newForm.appendChild(searchVal);
+
+		document.body.appendChild(newForm);
+		newForm.submit();
+}
 </script>
 </body>
 </html>
