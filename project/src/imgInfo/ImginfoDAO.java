@@ -189,7 +189,7 @@ public class ImginfoDAO {
 	}
 	
 	public ArrayList<ImgInfo> search(String search) {
-		String sql = "SELECT * FROM gpscam.img_info where subject like ? or content like ?";
+		String sql = "SELECT * FROM gpscam.img_info where subject like ? or content like ? order by time desc";
 		ArrayList<ImgInfo> list = new ArrayList<ImgInfo>();
 		try {
 			conn = pool.getConnection();
