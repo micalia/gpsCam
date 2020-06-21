@@ -74,7 +74,7 @@ try{
    	Thumbnails.of(originPath).size(180,180).toFile(saveThumbPath);
     
     ImginfoDAO imginfoDAO = new ImginfoDAO();
-if(lat == null && lng == null){
+if(lat == null || lng == null || lat =="" || lng == ""){
 %>
 	<script>
 		alert("오류가 발생했습니다");
@@ -92,9 +92,9 @@ if(lat == null && lng == null){
 %>
 
 <script>
-	//location.href="https://54.180.24.137:8443/project/historyView.jsp";
-	//location.href="https://110.12.74.87:8443/project/historyView.jsp";
-	location.href="https://localhost:8443/project/historyView.jsp";
+	//location.href="https://54.180.24.137:8443/project/mapsurfing.jsp";
+	//location.href="https://110.12.74.87:8443/project/mapsurfing.jsp";
+	location.href="https://localhost:8443/project/mapsurfing.jsp";
 </script>
 
 </body>

@@ -18,12 +18,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="./js/jquery-3.4.1.min.js"></script>
-<title>history view</title>
+<title>Map Surfing</title>
 <style>
 html,body{
 	height:100%;
 	min-height:100% !important;
 	width:100%;
+	position:absolute;
 }
 body{
 	margin:0px;
@@ -73,7 +74,7 @@ body{
 	display:none;
 }
 #topBar{
-	background-color: black;
+	background-color: #29e2ff;
 	position: absolute;
 	z-index:2;
 	width:100%;
@@ -187,13 +188,13 @@ body{
 }
 </style>
 </head>
-<body>
+<body style="overflow:hidden;">
 
-<div id="topBar"><span class="titleName">History View</span><div id="filterBox" onclick="filterView()"><img src="./img/filterIcon.png" id="filterIcon"></div></div>
+<div id="topBar"><span class="titleName" onclick="filterNone()">Map Surfing</span><div id="filterBox" onclick="filterView()"><img src="./img/filterIcon.png" id="filterIcon"></div></div>
 <div id="searchBar">
-<input type="text" id="searchInput" class="form-control AllsearchInput" placeholder="전체검색">
+<input type="text" id="searchInput" class="form-control AllsearchInput" placeholder="전체검색" autocomplete="off" onclick="filterNone()">
 <input type="submit" class="btn btn-secondary" value="검색" style="border-radius:0px;width:17%;" onclick="realSearch()">
-<input type="text" id="keyword" class="form-control searchInput" placeholder="검색결과에서 찾기">
+<input type="text" id="keyword" class="form-control searchInput" placeholder="검색결과에서 찾기" autocomplete="off" onclick="filterNone()">
 <!-- <input type="submit" class="btn btn-secondary" value="검색" style="border-radius:0px;width:17%;"> -->
 </div>
 <div id="filterGlass">
@@ -202,20 +203,21 @@ body{
 <nav class="navigation">
   <ul class="mainmenu">
     <li><span id="allShow" class="timeselect" onclick="allShow()">전체</span></li>
+    <li><span id="todaySort" class="timeselect" onclick="todaySort()">오늘</span></li>
     <li><span id="weekSort" class="timeselect" onclick="weekSort()">이번 주</span></li>
     <li><span id="monthSort" class="timeselect" onclick="monthSort()">이번 달</span></li>
     <li><span id="thisYear" class="timeselect" onclick="thisYear()">올해</span></li>
-    <li><span class="directInput">직접입력</span><input type="text" name="startdate" id="startdate" class="form-control termInput" onkeyup="date_mask(this.name);">
+    <li><span class="directInput">직접입력</span><input type="date" name="startdate" id="startdate" class="form-control termInput" style="width:146px;padding: .375rem 0.25rem;">
     <center>~</center>
-    <input type="text" name="enddate" id="enddate"class="form-control termInput" onkeyup="date_mask2(this.name);">
+    <input type="date" name="enddate" id="enddate" class="form-control termInput" style="width:146px;padding: .375rem 0.25rem;">
     <button class="btn btn-secondary applybtn" onclick="setPeriod()">적용하기</button></li>
   </ul>
 </nav>
 </div>
 </div>
 <div class="inter-box">
-<div class="scroll-box">
-<table id="listBox" class="listBox" border="1" >
+<div class="scroll-box" onclick="filterNone()">
+<table id="listBox" class="listBox" border="1" onclick="filterNone()">
 <%
 	for(int i=0; i < list.size(); i++){%>
 		<tr>
@@ -231,11 +233,21 @@ body{
 		<%}%>
 </table>
 </div>
-<input type="button" class="btn btn-primary gomap" onclick="backToMap()" value="지도로 돌아가기">
+<input type="button" class="btn btn-primary gomap" onclick="backToMap()" value="지도로 돌아가기" style="height:9%;">
 </div>
 <div class="image-box">
 </div>
 <script>
+$(document).ready(function() {
+    var windowHeight = $(window).innerHeight();
+    $('body').css({'height':windowHeight});
+});
+function filterNone(){
+	document.getElementById("filterGlass").style.display="none";
+	document.getElementById("glassBox").style.display="none";
+	document.getElementById("filterContainer").style.display="none";
+}
+
 function goImginfo(gonum){
 	var newForm = document.createElement("form");
 	newForm.name = "newForm";
@@ -266,7 +278,7 @@ function backToMap(){
 	var newForm = document.createElement("form");
 	newForm.name = "newForm";
 	newForm.method = "post";
-	newForm.action="historyView.jsp";
+	newForm.action="mapsurfing.jsp";
 	
 	document.body.appendChild(newForm);
 	newForm.submit();
@@ -295,6 +307,12 @@ $(document).ready(function() {
 });
 
 function realSearch(){
+	var searchInput = document.getElementById("searchInput").value;
+	if(searchInput == ""){
+		alert("검색 키워드를 입력해주세요");
+		return false;
+	}
+	
 	var newForm = document.createElement("form");
 	newForm.name = "newForm";
 	newForm.method = "post";
@@ -303,7 +321,7 @@ function realSearch(){
 	var searchVal = document.createElement("input");
 	searchVal.setAttribute("type","hidden");
 	searchVal.setAttribute("name","search");
-	searchVal.setAttribute("value", document.getElementById("searchInput").value);
+	searchVal.setAttribute("value", searchInput);
 	newForm.appendChild(searchVal);
 
 		document.body.appendChild(newForm);
@@ -311,7 +329,9 @@ function realSearch(){
 }
 
 
-function date_mask(textid) {
+/* 
+ //input type =date로 바꾸면서 필요없어짐
+ function date_mask(textid) {
 	var text = eval(textid);
 	var textlength = text.value.length;
 
@@ -402,7 +422,7 @@ function date_mask(textid) {
 		    input.select();
 		   }
 		   return returnval;
-		  }
+		  } */
 		
         var temp = $("#listBox > tbody > tr > td:nth-child(2n+2)");
 		var currentDay = new Date();  
@@ -410,6 +430,17 @@ function date_mask(textid) {
 		var theMonth = currentDay.getMonth();
 		var theDate  = currentDay.getDate();
 		var theDayOfWeek = currentDay.getDay();
+		
+		var month = ("0" + (theMonth + 1)).slice(-2);
+		var todayVal = theYear + "-" + month + "-" + theDate;
+		//현재 날짜 값을 필터에 시작날짜, 끝날짜에 넣어줌
+		Date.prototype.toDateInputValue = (function() {
+		    var local = new Date(this);
+		    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+		    return local.toJSON().slice(0,10);
+		});
+		document.getElementById("startdate").value = new Date().toDateInputValue();
+		document.getElementById("enddate").value = new Date().toDateInputValue();
 		
 		function allShow(){
 			document.getElementById("filterGlass").style.display="none";
@@ -420,6 +451,29 @@ function date_mask(textid) {
 			}
 			document.getElementById("allShow").style.backgroundColor="#d1d1d1";
 	        $(temp).parent().show();
+		}
+		
+		function todaySort(){
+			document.getElementById("filterGlass").style.display="none";
+			document.getElementById("glassBox").style.display="none";
+			document.getElementById("filterContainer").style.display="none";
+			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
+				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
+			}
+			document.getElementById("todaySort").style.backgroundColor="#d1d1d1";
+			var showNum = [];
+			
+			for(i=0; i<temp.length; i++){
+				if($(temp[i]).find(".time").html().substring(0,10) == todayVal){
+					showNum[i] = i;
+				}
+			}
+			
+			$("#listBox > tbody > tr").hide();
+			for(i = 0; i < showNum.length; i ++){
+		        $(temp[showNum[i]]).parent().show();
+		        	
+		        }
 		}
 		
 		function weekSort(){
@@ -461,9 +515,7 @@ function date_mask(textid) {
 		        }
 		
 		}
-		
-		var month = ("0" + (theMonth + 1)).slice(-2);
-		
+				
 		function monthSort(){
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
@@ -511,16 +563,20 @@ function date_mask(textid) {
 		}
 		
 		function setPeriod(){
+			/*var startInput = document.getElementById("startdate");
+			var endInput = document.getElementById("enddate");
+			
+			 input type =date로 바꾸고 필요 없어짐 
+			if(checkdate(startInput) == false){
+				return false;
+			}
+			if(checkdate2(endInput) == false){
+				return false;
+			} */
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
 			document.getElementById("filterContainer").style.display="none";
 			
-			if(date_mask("startdate") == false){
-				return false;
-			}
-			if(date_mask2("enddate") == false){
-				return false;
-			}
 			var start = document.getElementById("startdate").value;
 			var end = document.getElementById("enddate").value;
 			

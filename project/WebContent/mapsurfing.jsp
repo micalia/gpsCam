@@ -13,7 +13,7 @@
 <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufu00uecjo&submodules=geocoder"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<title>history view</title>
+<title>Map Surfing</title>
 <style>
 @import "compass/css3";
 
@@ -22,7 +22,9 @@ body{
 	min-height:100% !important;
 	width:100%;
 	height:100%;
+	position:absolute;
 }
+
 .circle {
  background: red;
   width: 86px;
@@ -55,8 +57,6 @@ body{
 .image-box{
 	width:100%;
 	height:100%;
-	background:rgba(0,0,0,0.9);
-	padding-top:80px;
 	z-index:3;
 	position:absolute;
 	display:none;
@@ -69,7 +69,6 @@ body{
 .imgContainer{
 	width:316px;
 	margin:0 auto;
-	border:3px solid yellow;
 	height:300px;
 	line-height:285px;
 	text-align:center;
@@ -406,12 +405,13 @@ body{
 	margin:0 auto;
 }
 #topBar{
-	background-color: black;
+	background-color: #29e2ff;
 	position: absolute;
 	z-index:2;
 	width:100%;
 	height:48px;
 	display:table;
+	table-layout: fixed;
 }
 .titleName{
 	color:white;
@@ -426,6 +426,7 @@ body{
 	position:relative;
 	width:45px;
 	float:right;
+	display: inline-block;
 }
 #searchIcon{
 	position:absolute;
@@ -478,11 +479,130 @@ body{
 	width:100%;
 	background:rgba(0,0,0,0.9);
 }
+#filterGlass{
+	position:absolute;
+	right:0px;
+}
+#glassBox{
+    position: relative;
+    float: right;
+    z-index: 3;
+    width: 45px;
+    height: 48px;
+}
+.navigation {
+  width: 100%;
+}
 
+.mainmenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.timeselect {
+  display: block;
+  background-color: white;
+  text-decoration: none;
+  padding: 10px;
+  color: #000;
+}
+
+.timeselect:hover {
+    background-color: #d1d1d1;
+}
+
+.mainmenu li:hover .submenu {
+  display: block;
+  max-height: 200px;
+}
+.termInput{
+	width: 110px;
+    margin: 0 auto;
+}
+.directInput{
+  display: block;
+  background-color: white;
+  text-decoration: none;
+  padding: 10px;
+  color: #000;
+}
+.applybtn{
+	border-radius:0px;
+	width:100%;
+	margin-top:10px;
+}
+#filterBox{
+	height:100%;
+	position:relative;
+	width:45px;
+	float:right;
+	display: inline-block;
+}
+#filterIcon{
+	position:absolute;
+	max-width:100%;
+	max-height:100%;
+	width:auto;
+	height:auto;
+	margin:auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+#filterContainer{
+	position:relative;
+    float: right;
+    z-index: 4;
+    width: 150px;
+    border: 1px solid gray;
+    background: white;
+}
+#uploadBox{
+	height:100%;
+	padding-top: 80px;
+    background: rgba(0,0,0,0.9);
+}
+/* .AllContainer{
+	position:fixed;
+	top:0px;
+	left:0px; 
+	min-height:100%;
+	width:100%;
+} */
+.filterSearch{
+    display: table-cell;
+    width: 92px;
+}
 </style>
 </head>
 <body>
-<div id="topBar"><div id="changeSearch"><span class="titleName">History View</span></div><div id="searchBox" onclick="changeSearch()"><img src="./img/searchIcon.png" id="searchIcon"></div></div>
+
+<div id="topBar"><div id="changeSearch" onclick="filterNone()"><span class="titleName">Map Surfing</span></div>
+	<div class="filterSearch">
+		<div id="filterBox" onclick="filterView()"><img src="./img/filterIcon.png" id="filterIcon"></div>
+		<div id="filterGlass">
+		<div id="glassBox" onclick="disappearfilter()" style="display:none;"></div><br><br>
+		<div id="filterContainer" style="display:none;">
+		<nav class="navigation">
+		  <ul class="mainmenu">
+		    <li><span id="allShow" class="timeselect" onclick="allShow()">전체</span></li>
+		    <li><span id="todaySort" class="timeselect" onclick="todaySort()">오늘</span></li>
+		    <li><span id="weekSort" class="timeselect" onclick="weekSort()">이번 주</span></li>
+		    <li><span id="monthSort" class="timeselect" onclick="monthSort()">이번 달</span></li>
+		    <li><span id="thisYear" class="timeselect" onclick="thisYear()">올해</span></li>
+		    <li><span class="directInput">직접입력</span><input type="date" name="startdate" id="startdate" class="form-control termInput" style="width:146px;padding: .375rem 0.25rem;">
+		    <center>~</center>
+		    <input type="date" name="enddate" id="enddate" class="form-control termInput" style="width:146px;padding: .375rem 0.25rem;">
+		    <button class="btn btn-secondary applybtn" onclick="setPeriod()">적용하기</button></li>
+		  </ul>
+		</nav>
+		</div>
+		</div>
+		<div id="searchBox" onclick="changeSearch()"><img src="./img/searchIcon.png" id="searchIcon"></div>
+	</div>
+</div>
 <div class="image-box"></div>
 <div id="loadingBox">
 	<div class="flexbox">
@@ -500,7 +620,7 @@ body{
 		  </div>
   </div>
 </div>
-<div id="map" style="width:100%;height:100%;">
+<div id="map" style="width:100%;height:100%;" onclick="filterNone()">
 <!-- <div class="search"> 2020-06-14 검색바 위로 뺄거임. 일단 주석 
 	<input type="text" id="address" class="form-control" autocomplete="off"><input type="button" id="search-btn" class="btn btn-secondary" value="검색">
 </div> -->
@@ -520,6 +640,16 @@ body{
 <input type="hidden" id="lng">
 
 <script>
+$(document).ready(function() {
+    var windowHeight = $(window).innerHeight();
+    $('body').css({'height':windowHeight});
+});
+	
+function filterNone(){
+	document.getElementById("filterGlass").style.display="none";
+	document.getElementById("glassBox").style.display="none";
+	document.getElementById("filterContainer").style.display="none";
+}
 
 var camIcon = document.getElementById("img");
 
@@ -581,7 +711,11 @@ var map = new naver.maps.Map('map', {
 		    		var lng = document.getElementById('lngV').value;
 		    		var sub = document.getElementById('img-subject').value;
 		    		var con = document.getElementById('img-content').value;
-		    		if(sub == ""){
+		    		
+		    		if(lat =="" || lng ==""){
+		    			alert("위치값을 불러올 수 없습니다.");
+		    			return false;
+		    		}else if(sub == ""){
 		    			alert("제목을 입력해주세요");
 		    			document.getElementById('img-subject').focus();
 		    			return false;
@@ -1089,8 +1223,14 @@ var map = new naver.maps.Map('map', {
 		    }
 		});
 
+		var currentDay = new Date();  
+		var theYear = currentDay.getFullYear();
+		var theMonth = currentDay.getMonth();
+		var theDate  = currentDay.getDate();
+		var month = ("0" + (theMonth + 1)).slice(-2);
 		
-
+		var todayVal = theYear + "-" + month + "-" + theDate;
+		
 	<%
 	ArrayList<ImgInfo> selectAll = null;
 	ArrayList<ImgInfo> equalPos = null;
@@ -1108,7 +1248,7 @@ var map = new naver.maps.Map('map', {
 	if(sCount == 1){
 	imgInfo = imginfoDAO.posData(selectAll.get(i).getLatitude(), selectAll.get(i).getLongitude());
 	
-	%>
+	%>//마커가 한개일 경우 리스트를 안보여주는 문제 때문에 같은위치에 마커한개를 만들어서 [마커 겹침]메소드가 실행되서 리스트를 보여주게 함 
 	var marker = new naver.maps.Marker({
 		position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
 		map: map,
@@ -1116,8 +1256,6 @@ var map = new naver.maps.Map('map', {
 		icon: {
 		content: [
 					'<img src="./img/pinmarker.png" class="pinMarker">'
-		            /* '<div class="getShowM">',
-		            '</div>' */
 		        ].join(''),
 		size: new naver.maps.Size(38, 58),
 		anchor: new naver.maps.Point(19, 58),
@@ -1125,16 +1263,31 @@ var map = new naver.maps.Map('map', {
 	});
 	
 	recognizer.add(marker);
-	
+	//오늘 추가된 이미지 정보인 경우 노란색 마커이미지를 보여줌. z-index 999로 맨앞에 나오게끔 함
+	if(todayVal == "<%= imgInfo.getTime().substring(0,10)%>"){
+
+		var marker = new naver.maps.Marker({
+			position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
+			map: map,
+			title: '<%= imgInfo.getTime().substring(0,19)%>,<%= imgInfo.getImg_path()%>,<%= imgInfo.getNum()%>',
+			icon: {
+			content: [
+						'<img src="./img/newpinmarker.png" class="pinMarker" style="z-index:999;" data-time="<%= imgInfo.getTime().substring(0,19)%>">'
+			        ].join(''),
+			size: new naver.maps.Size(38, 58),
+			anchor: new naver.maps.Point(19, 58),
+			},
+		});
+		
+		recognizer.add(marker);
+	}else{
 	var marker = new naver.maps.Marker({
 		position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
 		map: map,
 		title: '<%= imgInfo.getTime().substring(0,19)%>,<%= imgInfo.getImg_path()%>,<%= imgInfo.getNum()%>',
 		icon: {
 		content: [
-					'<img src="./img/pinmarker.png" class="pinMarker">'
-		            /* '<div class="getShowM">',
-		            '</div>' */
+					'<img src="./img/pinmarker.png" class="pinMarker" data-time="<%= imgInfo.getTime().substring(0,19)%>">'
 		        ].join(''),
 		size: new naver.maps.Size(38, 58),
 		anchor: new naver.maps.Point(19, 58),
@@ -1142,36 +1295,49 @@ var map = new naver.maps.Map('map', {
 	});
 	
 	recognizer.add(marker);
-
-	<% }else if(sCount > 1){
-		equalPos = imginfoDAO.equalPos(lat, lng);%>
-		
-		<%
-		for (int j = 0; j < equalPos.size(); j++) {
-		
-		%>
-		var marker = new naver.maps.Marker({
-			position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
-			map: map,
-			title: '<%= equalPos.get(j).getTime().substring(0,19)%>,<%= equalPos.get(j).getImg_path()%>,<%= equalPos.get(j).getNum()%>',
-			icon: {
-			    content: [
-			    			'<img src="./img/pinmarker.png" class="pinMarker">'
-			                /* '<div class="getShowM">',
-			                '</div>' */
-			            ].join(''),
-			    size: new naver.maps.Size(38, 58),
-			    anchor: new naver.maps.Point(19, 58),
-			},
-		});
-		
-		recognizer.add(marker);
-	
-		
-	
-		<%
-		}
 	}
+	<% }else if(sCount > 1){//같은 위치에 등록된 사진이 1개 이상인 경우
+		//같은 위치에 등록된 이미지정보 리스트를 뽑아서 ArrayList 변수인 equalPos에 담음	
+		equalPos = imginfoDAO.equalPos(lat, lng);%>
+			
+			<%
+			for (int j = 0; j < equalPos.size(); j++) {
+			
+			%>
+			if(todayVal == <%= equalPos.get(j).getTime().substring(0,10)%>){
+				var marker = new naver.maps.Marker({
+					position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
+					map: map,
+					title: '<%= equalPos.get(j).getTime().substring(0,19)%>,<%= equalPos.get(j).getImg_path()%>,<%= equalPos.get(j).getNum()%>',
+					icon: {
+					    content: [
+					    			'<img src="./img/newpinmarker.png" class="pinMarker" data-time="<%= equalPos.get(j).getTime().substring(0,19)%>">'
+					            ].join(''),
+					    size: new naver.maps.Size(38, 58),
+					    anchor: new naver.maps.Point(19, 58),
+					},
+				});
+				
+				recognizer.add(marker);
+			}else{
+				var marker = new naver.maps.Marker({
+					position: new naver.maps.LatLng(<%= lat%>, <%= lng%>),
+					map: map,
+					title: '<%= equalPos.get(j).getTime().substring(0,19)%>,<%= equalPos.get(j).getImg_path()%>,<%= equalPos.get(j).getNum()%>',
+					icon: {
+					    content: [
+					    			'<img src="./img/pinmarker.png" class="pinMarker" data-time="<%= equalPos.get(j).getTime().substring(0,19)%>">'
+					            ].join(''),
+					    size: new naver.maps.Size(38, 58),
+					    anchor: new naver.maps.Point(19, 58),
+					},
+				});
+				
+				recognizer.add(marker);
+			}
+			<%
+			}
+		}
 	}
 	%>
 
@@ -1438,6 +1604,10 @@ function myPosition(){
 }
 
 function changeSearch(){
+	document.getElementById("filterGlass").style.display="none";
+	document.getElementById("glassBox").style.display="none";
+	document.getElementById("filterContainer").style.display="none";
+	
 	$("#changeSearch").html("<div class='inlineBox'><div id='backFlow' onclick='backFlow()'><img src='./img/backArrow.png' class='backArrowCss'></div><input type='text' id='searchInput' class='form-control searchStyle' placeholder='검색' maxlength='20'></div>");
 	document.getElementById("searchInput").focus();
 	document.getElementById("searchModeBox").style.display="block";
@@ -1446,12 +1616,17 @@ function changeSearch(){
 
 function backFlow(){
 	$("#changeSearch").empty();
-	$("#changeSearch").html("<span class='titleName'>History View</span>");
+	$("#changeSearch").html("<span class='titleName'>Map Surfing</span>");
 	document.getElementById("searchModeBox").style.display="none";
 	document.getElementById("searchBox").setAttribute("onclick", "changeSearch()");
 }
 
 function realSearch(){
+	var searchInput = document.getElementById("searchInput").value;
+	if(searchInput == ""){
+		alert("검색 키워드를 입력해주세요");
+		return false;
+	}
 	var newForm = document.createElement("form");
 	newForm.name = "newForm";
 	newForm.method = "post";
@@ -1460,12 +1635,315 @@ function realSearch(){
 	var searchVal = document.createElement("input");
 	searchVal.setAttribute("type","hidden");
 	searchVal.setAttribute("name","search");
-	searchVal.setAttribute("value", document.getElementById("searchInput").value);
+	searchVal.setAttribute("value", searchInput);
 	newForm.appendChild(searchVal);
 
 		document.body.appendChild(newForm);
 		newForm.submit();
 }
+
+
+function filterView(){
+	backFlow();
+	document.getElementById("filterGlass").style.display="block";
+	document.getElementById("glassBox").style.display="block";
+	document.getElementById("filterContainer").style.display="block";
+}
+
+function disappearfilter(){
+	document.getElementById("filterGlass").style.display="none";
+	document.getElementById("glassBox").style.display="none";
+	document.getElementById("filterContainer").style.display="none";
+	
+}
+
+/* 
+ // input type =date로 바꾸면서 필요없어짐
+ function date_mask(textid) {
+var text = eval(textid);
+var textlength = text.value.length;
+ '-'자동입력 때문에 날짜 수정이 힘듦
+	if (textlength == 4) {
+	text.value = text.value + "-";
+	} else if (textlength == 7) {
+	text.value = text.value + "-";
+	} else 
+	if (textlength > 9) { 
+		console.log("실행");
+	//날짜 수동 입력 Validation 체크
+	var chk_date = checkdate(text);
+	
+		if (chk_date == false) {
+			return false;
+		}
+	}
+} 
+
+function checkdate(input) {
+   var validformat = /^\d{4}\-\d{2}\-\d{2}$/; //Basic check for format validity
+   var returnval = false;
+   console.log(input.value);
+   if (!validformat.test(input.value)) {
+    alert("날짜 형식이 올바르지 않습니다. YYYY-MM-DD");
+    document.getElementById("startdate").select();
+    return false;
+   } else { //Detailed check for valid date ranges
+    var yearfield = input.value.substring(0,3);
+    console.log(yearfield);
+    var monthfield = input.value.split("-")[1];
+    var dayfield = input.value.split("-")[2];
+    var dayobj = new Date(yearfield, monthfield - 1, dayfield);
+   }
+   if ((dayobj.getMonth() + 1 != monthfield)
+     || (dayobj.getDate() != dayfield)
+     || (dayobj.getFullYear() != yearfield)) {
+    alert("날짜 형식이 올바르지 않습니다. YYYY-MM-DD");
+    document.getElementById("startdate").select();
+    return false;
+   } else {
+    //alert ('Correct date');
+    returnval = true;
+   }
+   if (returnval == false) {
+    input.select();
+   }
+   return returnval;
+  }
+
+function date_mask2(textid) {
+	var text = eval(textid);
+	var textlength = text.value.length;
+	'-'자동입력 때문에 날짜 수정이 힘듦
+		if (textlength == 4) {
+		text.value = text.value + "-";
+		} else if (textlength == 7) {
+		text.value = text.value + "-";
+		} else 
+		if (textlength > 9) {
+		//날짜 수동 입력 Validation 체크
+		var chk_date = checkdate2(text);
+		
+			if (chk_date == false) {
+				return false;
+			}
+		}
+	} 
+
+	function checkdate2(input) {
+	   var validformat = /^\d{4}\-\d{2}\-\d{2}$/; //Basic check for format validity
+	   var returnval = false;
+	   
+	   if (!validformat.test(input.value)) {
+	    alert("날짜 형식이 올바르지 않습니다. YYYY-MM-DD");
+	    document.getElementById("enddate").select();
+	    return false;
+	   } else { //Detailed check for valid date ranges
+	    var yearfield = input.value.split("-")[0];
+	    var monthfield = input.value.split("-")[1];
+	    var dayfield = input.value.split("-")[2];
+	    var dayobj = new Date(yearfield, monthfield - 1, dayfield);
+	   }
+	   if ((dayobj.getMonth() + 1 != monthfield)
+	     || (dayobj.getDate() != dayfield)
+	     || (dayobj.getFullYear() != yearfield)) {
+	    alert("날짜 형식이 올바르지 않습니다. YYYY-MM-DD");
+	    document.getElementById("enddate").select();
+	    return false;
+	   } else {
+	    returnval = true;
+	   }
+	   if (returnval == false) {
+	    input.select();
+	   }
+	   return returnval;
+	  } */
+		
+        var temp =[];
+        temp = document.getElementsByClassName("pinMarker");
+		
+		var theDayOfWeek = currentDay.getDay();
+		
+		Date.prototype.toDateInputValue = (function() {
+		    var local = new Date(this);
+		    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+		    return local.toJSON().slice(0,10);
+		});
+		document.getElementById("startdate").value = new Date().toDateInputValue();
+		document.getElementById("enddate").value = new Date().toDateInputValue();
+		//시간 필터 메소드
+		function allShow(){
+			document.getElementById("filterGlass").style.display="none";
+			document.getElementById("glassBox").style.display="none";
+			document.getElementById("filterContainer").style.display="none";
+			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
+				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
+			}
+			document.getElementById("allShow").style.backgroundColor="#d1d1d1";
+	        $(temp).show();
+		}
+		
+		function todaySort(){
+			document.getElementById("filterGlass").style.display="none";
+			document.getElementById("glassBox").style.display="none";
+			document.getElementById("filterContainer").style.display="none";
+			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
+				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
+			}
+			document.getElementById("todaySort").style.backgroundColor="#d1d1d1";
+			var showNum = [];
+			
+			for(i=0; i<temp.length; i++){
+				if(temp[i].dataset.time){
+					 if(temp[i].dataset.time.substring(0,10) == todayVal){
+						showNum[i] = i;
+					} 
+				}
+			}
+			
+			$(".pinMarker").hide();
+			for(i = 0; i < showNum.length; i ++){
+		        $(temp[showNum[i]]).show();
+		        	
+		        }
+		}
+		
+		function weekSort(){
+			document.getElementById("filterGlass").style.display="none";
+			document.getElementById("glassBox").style.display="none";
+			document.getElementById("filterContainer").style.display="none";
+			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
+				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
+			}
+			document.getElementById("weekSort").style.backgroundColor="#d1d1d1";
+			var thisWeek = [];
+			 
+			for(var i=0; i<7; i++) {
+			  var resultDay = new Date(theYear, theMonth, theDate + (i - theDayOfWeek));
+			  var yyyy = resultDay.getFullYear();
+			  var mm = Number(resultDay.getMonth()) + 1;
+			  var dd = resultDay.getDate();
+			 
+			  mm = String(mm).length === 1 ? '0' + mm : mm;
+			  dd = String(dd).length === 1 ? '0' + dd : dd;
+			 
+			  thisWeek[i] = yyyy + '-' + mm + '-' + dd;
+			}
+			
+			
+			var showNum = [];
+			for(i=0; i<temp.length; i++){
+				for(j=0; j < thisWeek.length; j++){
+					if(temp[i].dataset.time){
+						if(temp[i].dataset.time.substring(0,10) == thisWeek[j]){
+							showNum[i] = i;
+						} 
+					}
+				}
+			} 
+			 
+			  $(".pinMarker").hide();
+		        for(i = 0; i < showNum.length; i ++){
+		        $(temp[showNum[i]]).show();
+		        	
+		        } 
+		
+		}
+		
+		
+		
+		function monthSort(){
+			document.getElementById("filterGlass").style.display="none";
+			document.getElementById("glassBox").style.display="none";
+			document.getElementById("filterContainer").style.display="none";
+			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
+				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
+			}
+			document.getElementById("monthSort").style.backgroundColor="#d1d1d1";
+			var showNum = [];
+			
+			for(i=0; i<temp.length; i++){
+				if(temp[i].dataset.time){
+					if(temp[i].dataset.time.substring(5,7) == month){
+						showNum[i] = i;
+					}
+				}
+			}
+			
+			$(".pinMarker").hide();
+			for(i = 0; i < showNum.length; i ++){
+		        $(temp[showNum[i]]).show();
+		        	
+		        }
+		}
+		
+		function thisYear(){
+			document.getElementById("filterGlass").style.display="none";
+			document.getElementById("glassBox").style.display="none";
+			document.getElementById("filterContainer").style.display="none";
+			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
+				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
+			}
+			document.getElementById("thisYear").style.backgroundColor="#d1d1d1";
+			var showNum = [];
+
+			for(i=0; i<temp.length; i++){
+				if(temp[i].dataset.time){
+					 if(temp[i].dataset.time.substring(0,4) == theYear){
+						showNum[i] = i;
+					} 
+				}
+			}
+			
+			$(".pinMarker").hide();
+			for(i = 0; i < showNum.length; i ++){
+		        $(temp[showNum[i]]).show();
+		        	
+		        }
+		}
+		
+		function setPeriod(){
+			/*var startInput = document.getElementById("startdate");
+			var endInput = document.getElementById("enddate");
+			
+			 input type =date로 바꾸고 필요 없어짐 
+			if(checkdate(startInput) == false){
+				return false;
+			}
+			if(checkdate2(endInput) == false){
+				return false;
+			} */
+			document.getElementById("filterGlass").style.display="none";
+			document.getElementById("glassBox").style.display="none";
+			document.getElementById("filterContainer").style.display="none";
+			var start = document.getElementById("startdate").value;
+			var end = document.getElementById("enddate").value;
+			
+			start = start + " 00:00:00";
+			end = end + " 23:59:59";
+			
+			if(start > end){
+				alert("시간 설정을 다시해주세요");
+				return false;
+			}
+			
+			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
+				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
+			}
+			
+			var showNum = [];
+			for(i=0; i<temp.length; i++){
+					if(temp[i].dataset.time > start && temp[i].dataset.time < end){
+						showNum[i] = i;
+				}
+			} 
+			 
+			 $(".pinMarker").hide();
+		        for(i = 0; i < showNum.length; i ++){
+		        $(temp[showNum[i]]).show();
+		        }
+			
+		}
 </script>
+
 </body>
 </html>

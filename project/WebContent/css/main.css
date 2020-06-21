@@ -31,21 +31,16 @@ body{
   -webkit-transform: scale( 0.2);-moz-transform: scale( 0.2 );-o-transform: scale( 0.2 );-ms-transform: scale( 0.2 );transform: scale( 0.2 );
   }
 }
-.camIcon{
-	width:60px;
-	position:absolute;
-	bottom:87px;
-	right:14px;
-}
+
 #img{
 	display:none;
 }
 .image-box{
 	width:100%;
 	height:100%;
-	background:rgba(0,0,0,0.5);
+	background:rgba(0,0,0,0.9);
 	padding-top:80px;
-	z-index:2;
+	z-index:3;
 	position:absolute;
 	display:none;
 }
@@ -57,7 +52,7 @@ body{
 .imgContainer{
 	width:316px;
 	margin:0 auto;
-	/* border:3px solid yellow; */
+	border:3px solid yellow;
 	height:300px;
 	line-height:285px;
 	text-align:center;
@@ -67,7 +62,7 @@ body{
 }
 .btn-box{
 	text-align:center;
-	margin-top:57px;
+	margin-top:17px;
 }
 .marSpan{
 	margin:38px;
@@ -192,7 +187,14 @@ body{
 	position: absolute;
 	z-index:2;
 	left:14px;
-	bottom:82px;
+	bottom:36px;
+}
+.camIcon{
+	width:60px;
+	position:absolute;
+	z-index:2;
+	bottom:41px;
+	right:14px;
 }
 #loadingBox{
 	width:100%;
@@ -365,4 +367,97 @@ body{
     position: absolute;
     top: 18px;
     left: 9px;
+}
+
+#img-subject{
+	margin: 0 auto;
+    display: block;
+    margin-top: 19px;
+    width: 316px;
+}
+#img-content{
+	margin: 0 auto;
+    display: block;
+    margin-top: 19px;
+    width: 316px;
+    height:136px;
+}
+
+.textcountbox{
+	overflow:hidden;
+	width: 316px;
+	margin:0 auto;
+}
+#topBar{
+	background-color: #29e2ff;
+	position: absolute;
+	z-index:2;
+	width:100%;
+	height:48px;
+	display:table;
+}
+.titleName{
+	color:white;
+	display:table-cell;
+	vertical-align:middle;
+	font-size:24px;
+	padding-left:11px;
+	width:100%;
+}
+#searchBox{
+	height:100%;
+	position:relative;
+	width:45px;
+	float:right;
+}
+#searchIcon{
+	position:absolute;
+	max-width:100%;
+	max-height:100%;
+	width:auto;
+	height:auto;
+	margin:auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+#changeSearch{
+	display: table-cell;
+    vertical-align: middle;
+    width:100%;
+}
+.searchStyle{
+    border-radius: 0px;
+}
+#backFlow{
+    width: 39px;
+}
+.inlineBox{
+    height: 100%;
+    display:flex;
+}
+#backFlow{
+    height: 100%;
+    position: relative;
+    width:49px;
+}
+.backArrowCss{
+	position:absolute;
+	max-width:100%;
+	max-height:100%;
+	width:24px;
+	height:auto;
+	margin:auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+#searchModeBox{
+	position:absolute;
+	z-index:2;
+	height:100%;
+	width:100%;
+	background:rgba(0,0,0,0.9);
 }
