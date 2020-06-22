@@ -49,6 +49,7 @@ body{
 	padding:0px;
 }
 .infotd{
+	padding:5px !important;
 	width:100%;
 	vertical-align:baseline;
 }
@@ -225,9 +226,9 @@ body{
 				<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
 			</td>
 			<td class="infotd">
-				<span>날짜 : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
-				<span>제목 : <%= list.get(i).getSubject()%></span><br>
-				<span>내용 : <%= list.get(i).getContent()%></span>
+				<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+				<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+				<span><b>내용</b> : <%= list.get(i).getContent()%></span>
 			</td>
 		</tr>
 		<%}%>
@@ -433,6 +434,9 @@ function realSearch(){
 		
 		var month = ("0" + (theMonth + 1)).slice(-2);
 		var todayVal = theYear + "-" + month + "-" + theDate;
+		var selectDate = theYear + month + theDate; //weekSort()메소드에서 사용
+		
+		var monthVal = theYear + "-" + month; //monthSort()메소드에 사용
 		//현재 날짜 값을 필터에 시작날짜, 끝날짜에 넣어줌
 		Date.prototype.toDateInputValue = (function() {
 		    var local = new Date(this);
@@ -484,20 +488,45 @@ function realSearch(){
 				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
 			}
 			document.getElementById("weekSort").style.backgroundColor="#d1d1d1";
-			var thisWeek = [];
-			 
-			for(var i=0; i<7; i++) {
-			  var resultDay = new Date(theYear, theMonth, theDate + (i - theDayOfWeek));
-			  var yyyy = resultDay.getFullYear();
-			  var mm = Number(resultDay.getMonth()) + 1;
-			  var dd = resultDay.getDate();
-			 
-			  mm = String(mm).length === 1 ? '0' + mm : mm;
-			  dd = String(dd).length === 1 ? '0' + dd : dd;
-			 
-			  thisWeek[i] = yyyy + '-' + mm + '-' + dd;
-			}
 			
+			var year  = selectDate.substring(0,4); //선택된 년도
+		    var month = selectDate.substring(4,6); //선택된 월
+		    var day   = selectDate.substring(6,8); //선택된 일자
+		    var week  = new Array("", "월", "화", "수", "목", "금", "토", "일");  // 아래 코드에서는 사용하지 않음
+		    // 보통 0~6 까지가 일~토로 표현된다 하지만 월요일부터 표현하기 위해 0번째를 공백처리
+			var currentDay = new Date(year, month-1, day);  
+			var theDayOfWeek = currentDay.getDay();        // 요일을 숫자로 구해옴
+			
+			// 선택한 날이 일요일 일때 전주의 날짜를 담음
+			 if(theDayOfWeek == 0){		 
+				 var currentDay = new Date(year, month-1, day-7);  		 
+			 }	 
+			 var theYear = currentDay.getFullYear();
+			 var theMonth = currentDay.getMonth();
+			 var theDate  = currentDay.getDate();
+			 var thisWeek = [];
+			 
+			 for(var i=1; i<8; i++) {
+			   var resultDay = new Date(theYear, theMonth, theDate + (i - theDayOfWeek));
+			   var yyyy = resultDay.getFullYear();
+			   var mm = Number(resultDay.getMonth()) + 1;
+			   var dd = resultDay.getDate();
+			   var dd_nm = resultDay.getDay();
+
+			   mm = String(mm).length === 1 ? '0' + mm : mm;
+			   dd = String(dd).length === 1 ? '0' + dd : dd;
+			  
+			//월요일부터 화, 수 ~ 일요일까지 날짜를 담음
+			   thisWeek[i] = yyyy + '-' + mm + '-' + dd;
+
+			   if(i==1){
+				  // 검색기준 월요일
+			   }else if(i==7){
+				  // 검색기준 일요일
+			   }	   
+
+			 }
+			 thisWeek.splice(0,1);
 			
 			var showNum = [];
 			for(i=0; i<temp.length; i++){
@@ -527,7 +556,7 @@ function realSearch(){
 			var showNum = [];
 			
 			for(i=0; i<temp.length; i++){
-				if($(temp[i]).find(".time").html().substring(5,7) == month){
+				if($(temp[i]).find(".time").html().substring(0,7) == monthVal){
 					showNum[i] = i;
 				}
 			}

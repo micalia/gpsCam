@@ -3,6 +3,9 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="imgInfo.ImgInfo" %>
 <%@ page import="imgInfo.ImginfoDAO" %>
+<%@ page import="imgInfo.DayOfWeek" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <%
 	String zoom = request.getParameter("zoom");
 	ArrayList<ImgInfo> list = new ArrayList<ImgInfo>();
@@ -52,6 +55,7 @@ body{
 	padding:0px;
 }
 .infotd{
+	padding:5px !important;
 	width:100%;
 	vertical-align:baseline;
 }
@@ -192,7 +196,7 @@ body{
 </style>
 </head>
 <body style="overflow:hidden;">
-
+	
 <div id="topBar"><span class="titleName" onclick="filterNone()">Map Surfing</span><div id="filterBox"  onclick="filterView()"><img src="./img/filterIcon.png" id="filterIcon"></div></div>
 <div id="searchBar">
 <input type="text" id="searchInput" class="form-control AllsearchInput" placeholder="전체검색" autocomplete="off" onclick="filterNone()">
@@ -222,24 +226,132 @@ body{
 <div class="scroll-box" onclick="filterNone()">
 <table id="listBox" class="listBox" border="1" onclick="filterNone()">
 <%
-	for(int i=0; i < list.size(); i++){%>
+String filter = request.getParameter("filter");
+
+SimpleDateFormat format = new SimpleDateFormat ("yyyyMMdd");// 이번주 배열로 불러올 때 필요함
+SimpleDateFormat Todayformat = new SimpleDateFormat ("yyyy-MM-dd");// 오늘 날짜 불러올 때 필요함
+SimpleDateFormat Monthformat = new SimpleDateFormat ("yyyy-MM");// 오늘 날짜 불러올 때 필요함
+SimpleDateFormat yearformat = new SimpleDateFormat ("yyyy");// 오늘 날짜 불러올 때 필요함
+Date time = new Date();
+		
+String timeVal = format.format(time); // 이번주 배열로 불러올 때 필요함
+String todayVal = Todayformat.format(time); // 오늘 날짜 불러올 때 필요함
+String monthVal = Monthformat.format(time); // 이번 달 불러올 때 필요함
+String yearVal = yearformat.format(time); // 이번 달 불러올 때 필요함
+
+%>
+<% 
+if(filter.equals("All")){
+%>
+<%for(int i=0; i < list.size(); i++){%>
+
 		<tr>
 			<td>	
 				<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
 			</td>
 			<td class="infotd">
-				<span>날짜 : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
-				<span>제목 : <%= list.get(i).getSubject()%></span><br>
-				<span>내용 : <%= list.get(i).getContent()%></span>
+				<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+				<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+				<span><b>내용</b> : <%= list.get(i).getContent()%></span>
 			</td>
 		</tr>
 		<%}%>
+<% }else if(filter.equals("today")){%>
+<%for(int i=0; i < list.size(); i++){
+System.out.println(list.get(i).getTime().substring(0,10));
+%>
+		<%if(list.get(i).getTime().substring(0,10).equals(todayVal)){ %>
+			<tr>
+				<td>	
+					<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
+				</td>
+				<td class="infotd">
+					<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+					<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+					<span><b>내용</b> : <%= list.get(i).getContent()%></span>
+				</td>
+			</tr>
+			<%} %>
+		<%}%>
+<%}else if(filter.equals("week")){
+//현재 날짜를 기준으로 이번 주 날짜들을 배열에 담음. 월요일 ~ 일요일
+DayOfWeek dayOfWeek = new DayOfWeek();
+String[] dayOfWeekArr = dayOfWeek.weekCalendar(timeVal);
+
+	//이번주에 업로드된 정보만 출력
+	for(int i=0; i < list.size(); i++){
+		for(int z=0; z<dayOfWeekArr.length; z++){
+				if(dayOfWeekArr[z].equals(list.get(i).getTime().substring(0,10))){%>
+					<tr>
+						<td>	
+							<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
+						</td>
+						<td class="infotd">
+							<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+							<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+							<span><b>내용</b> : <%= list.get(i).getContent()%></span>
+						</td>
+					</tr>
+				<%}
+			}
+	}
+
+}else if(filter.equals("month")){
+	for(int i=0; i < list.size(); i++){
+		if(monthVal.equals(list.get(i).getTime().substring(0,7))){
+%>
+					<tr>
+						<td>	
+							<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
+						</td>
+						<td class="infotd">
+							<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+							<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+							<span><b>내용</b> : <%= list.get(i).getContent()%></span>
+						</td>
+					</tr>
+<%		}		
+	}
+}else if(filter.equals("year")){
+	for(int i=0; i < list.size(); i++){
+		if(yearVal.equals(list.get(i).getTime().substring(0,4))){
+%>
+					<tr>
+						<td>	
+							<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
+						</td>
+						<td class="infotd">
+							<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+							<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+							<span><b>내용</b> : <%= list.get(i).getContent()%></span>
+						</td>
+					</tr>
+<%		}
+	}
+}else{// filter 파라미터가 없으면 전체리스트를 보여줌
+%>
+<%for(int i=0; i < list.size(); i++){%>
+
+		<tr>
+			<td>	
+				<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
+			</td>
+			<td class="infotd">
+				<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+				<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+				<span><b>내용</b> : <%= list.get(i).getContent()%></span>
+			</td>
+		</tr>
+		<%}%>
+<%}%>
+	
 </table>
 </div>
 <input type="button" class="btn btn-primary gomap" onclick="backToMap()" value="지도로 돌아가기" style="height:9%;">
 </div>
 <div class="image-box">
 </div>
+
 <script>
 $(document).ready(function() {
     var windowHeight = $(window).innerHeight();
@@ -458,6 +570,9 @@ function date_mask(textid) {
 		var month = ("0" + (theMonth + 1)).slice(-2);
 		var todayVal = theYear + "-" + month + "-" + theDate;
 		//현재 날짜 값을 필터에 시작날짜, 끝날짜에 넣어줌
+		var selectDate = theYear + month + theDate; //weekSort()메소드에서 사용
+		
+		var monthVal = theYear + "-" + month; //monthSort()메소드에 사용
 		Date.prototype.toDateInputValue = (function() {
 		    var local = new Date(this);
 		    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
@@ -508,21 +623,46 @@ function date_mask(textid) {
 				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
 			}
 			document.getElementById("weekSort").style.backgroundColor="#d1d1d1";
-			var thisWeek = [];
+
+			var year  = selectDate.substring(0,4); //선택된 년도
+		    var month = selectDate.substring(4,6); //선택된 월
+		    var day   = selectDate.substring(6,8); //선택된 일자
+		    var week  = new Array("", "월", "화", "수", "목", "금", "토", "일");  // 아래 코드에서는 사용하지 않음
+		    // 보통 0~6 까지가 일~토로 표현된다 하지만 월요일부터 표현하기 위해 0번째를 공백처리
+			var currentDay = new Date(year, month-1, day);  
+			var theDayOfWeek = currentDay.getDay();        // 요일을 숫자로 구해옴
+
+			// 선택한 날이 일요일 일때 전주의 날짜를 담음
+			 if(theDayOfWeek == 0){		 
+				 var currentDay = new Date(year, month-1, day-7);  		 
+			 }	 
+			 var theYear = currentDay.getFullYear();
+			 var theMonth = currentDay.getMonth();
+			 var theDate  = currentDay.getDate();
+			 var thisWeek = [];
 			 
-			for(var i=0; i<7; i++) {
-			  var resultDay = new Date(theYear, theMonth, theDate + (i - theDayOfWeek));
-			  var yyyy = resultDay.getFullYear();
-			  var mm = Number(resultDay.getMonth()) + 1;
-			  var dd = resultDay.getDate();
+			 for(var i=1; i<8; i++) {
+			   var resultDay = new Date(theYear, theMonth, theDate + (i - theDayOfWeek));
+			   var yyyy = resultDay.getFullYear();
+			   var mm = Number(resultDay.getMonth()) + 1;
+			   var dd = resultDay.getDate();
+			   var dd_nm = resultDay.getDay();
+
+			   mm = String(mm).length === 1 ? '0' + mm : mm;
+			   dd = String(dd).length === 1 ? '0' + dd : dd;
+			  
+			//월요일부터 화, 수 ~ 일요일까지 날짜를 담음
+			   thisWeek[i] = yyyy + '-' + mm + '-' + dd;
+
+			   if(i==1){
+				  // 검색기준 월요일
+			   }else if(i==7){
+				  // 검색기준 일요일
+			   }	   
+
+			 }
+			 thisWeek.splice(0,1);
 			 
-			  mm = String(mm).length === 1 ? '0' + mm : mm;
-			  dd = String(dd).length === 1 ? '0' + dd : dd;
-			 
-			  thisWeek[i] = yyyy + '-' + mm + '-' + dd;
-			}
-			
-			
 			var showNum = [];
 			for(i=0; i<temp.length; i++){
 				for(j=0; j < thisWeek.length; j++){
@@ -552,7 +692,7 @@ function date_mask(textid) {
 			var showNum = [];
 			
 			for(i=0; i<temp.length; i++){
-				if($(temp[i]).find(".time").html().substring(5,7) == month){
+				if($(temp[i]).find(".time").html().substring(0,7) == monthVal){
 					showNum[i] = i;
 				}
 			}
@@ -631,5 +771,6 @@ function date_mask(textid) {
 			
 		}
 </script>
+
 </body>
 </html>

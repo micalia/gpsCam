@@ -638,7 +638,7 @@ body{
 </div>
 <input type="hidden" id="lat">
 <input type="hidden" id="lng">
-<input type="hidden" name="filter" id="filter">
+
 <script>
 $(document).ready(function() {
     var windowHeight = $(window).innerHeight();
@@ -812,7 +812,6 @@ var map = new naver.maps.Map('map', {
         				+ 'zoomVal.setAttribute("name","zoom");'
         				+ 'zoomVal.setAttribute("value",map.getZoom());'
         				+ 'newForm.appendChild(zoomVal);'
-        				+ 'newForm.appendChild(document.getElementById("filter"));'
 	        			+ 'for(i=0; i<ArrayBox.length; i++){'
 	        				+ 'var input = document.createElement("input");'
 	        				+ 'input.setAttribute("type","hidden");'
@@ -1229,9 +1228,9 @@ var map = new naver.maps.Map('map', {
 		var theMonth = currentDay.getMonth();
 		var theDate  = currentDay.getDate();
 		var month = ("0" + (theMonth + 1)).slice(-2);
-		var monthVal = theYear + "-" + month; //monthSort()메소드에 사용
+		
 		var todayVal = theYear + "-" + month + "-" + theDate;
-		var selectDate = theYear + month + theDate; //weekSort()메소드에서 사용
+		
 	<%
 	ArrayList<ImgInfo> selectAll = null;
 	ArrayList<ImgInfo> equalPos = null;
@@ -1772,14 +1771,10 @@ function date_mask2(textid) {
 		document.getElementById("startdate").value = new Date().toDateInputValue();
 		document.getElementById("enddate").value = new Date().toDateInputValue();
 		//시간 필터 메소드
-		//페이지가 로딩되면 기본으로 시간필터 값은 All 
-		document.getElementById("filter").value="All";
 		function allShow(){
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
 			document.getElementById("filterContainer").style.display="none";
-			document.getElementById("filter").value="All";
-			
 			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
 				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
 			}
@@ -1791,7 +1786,6 @@ function date_mask2(textid) {
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
 			document.getElementById("filterContainer").style.display="none";
-			document.getElementById("filter").value="today";
 			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
 				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
 			}
@@ -1817,50 +1811,24 @@ function date_mask2(textid) {
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
 			document.getElementById("filterContainer").style.display="none";
-			document.getElementById("filter").value="week";
 			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
 				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
 			}
 			document.getElementById("weekSort").style.backgroundColor="#d1d1d1";
-
-			var year  = selectDate.substring(0,4); //선택된 년도
-		    var month = selectDate.substring(4,6); //선택된 월
-		    var day   = selectDate.substring(6,8); //선택된 일자
-		    var week  = new Array("", "월", "화", "수", "목", "금", "토", "일");  // 아래 코드에서는 사용하지 않음
-		    // 보통 0~6 까지가 일~토로 표현된다 하지만 월요일부터 표현하기 위해 0번째를 공백처리
-			var currentDay = new Date(year, month-1, day);  
-			var theDayOfWeek = currentDay.getDay();        // 요일을 숫자로 구해옴
-
-			// 선택한 날이 일요일 일때 전주의 날짜를 담음
-			 if(theDayOfWeek == 0){		 
-				 var currentDay = new Date(year, month-1, day-7);  		 
-			 }	 
-			 var theYear = currentDay.getFullYear();
-			 var theMonth = currentDay.getMonth();
-			 var theDate  = currentDay.getDate();
-			 var thisWeek = [];
+			var thisWeek = [];
 			 
-			 for(var i=1; i<8; i++) {
-			   var resultDay = new Date(theYear, theMonth, theDate + (i - theDayOfWeek));
-			   var yyyy = resultDay.getFullYear();
-			   var mm = Number(resultDay.getMonth()) + 1;
-			   var dd = resultDay.getDate();
-			   var dd_nm = resultDay.getDay();
-
-			   mm = String(mm).length === 1 ? '0' + mm : mm;
-			   dd = String(dd).length === 1 ? '0' + dd : dd;
-			  
-			//월요일부터 화, 수 ~ 일요일까지 날짜를 담음
-			   thisWeek[i] = yyyy + '-' + mm + '-' + dd;
-
-			   if(i==1){
-				  // 검색기준 월요일
-			   }else if(i==7){
-				  // 검색기준 일요일
-			   }	   
-
-			 }
-			 thisWeek.splice(0,1);
+			for(var i=0; i<7; i++) {
+			  var resultDay = new Date(theYear, theMonth, theDate + (i - theDayOfWeek));
+			  var yyyy = resultDay.getFullYear();
+			  var mm = Number(resultDay.getMonth()) + 1;
+			  var dd = resultDay.getDate();
+			 
+			  mm = String(mm).length === 1 ? '0' + mm : mm;
+			  dd = String(dd).length === 1 ? '0' + dd : dd;
+			 
+			  thisWeek[i] = yyyy + '-' + mm + '-' + dd;
+			}
+			
 			
 			var showNum = [];
 			for(i=0; i<temp.length; i++){
@@ -1878,7 +1846,7 @@ function date_mask2(textid) {
 		        $(temp[showNum[i]]).show();
 		        	
 		        } 
-		 
+		
 		}
 		
 		
@@ -1887,7 +1855,6 @@ function date_mask2(textid) {
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
 			document.getElementById("filterContainer").style.display="none";
-			document.getElementById("filter").value="month";
 			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
 				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
 			}
@@ -1896,7 +1863,7 @@ function date_mask2(textid) {
 			
 			for(i=0; i<temp.length; i++){
 				if(temp[i].dataset.time){
-					if(temp[i].dataset.time.substring(0,7) == monthVal){
+					if(temp[i].dataset.time.substring(5,7) == month){
 						showNum[i] = i;
 					}
 				}
@@ -1913,7 +1880,6 @@ function date_mask2(textid) {
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
 			document.getElementById("filterContainer").style.display="none";
-			document.getElementById("filter").value="year";
 			for(i=0; i < document.getElementsByClassName("timeselect").length; i++){
 				document.getElementsByClassName("timeselect")[i].style.backgroundColor="";
 			}
