@@ -812,7 +812,21 @@ var map = new naver.maps.Map('map', {
         				+ 'zoomVal.setAttribute("name","zoom");'
         				+ 'zoomVal.setAttribute("value",map.getZoom());'
         				+ 'newForm.appendChild(zoomVal);'
+       				    + 'if(document.getElementById("filter").value == "setPeriod"){'
+       					+ 'newForm.appendChild(document.getElementById("startdate"));'
+       					+ 'newForm.appendChild(document.getElementById("enddate"));'
+       					+ '}'
         				+ 'newForm.appendChild(document.getElementById("filter"));'
+        				/* + 'var startdate = document.createElement("input");'
+	        			+ 'startdate.setAttribute("type","hidden");'
+        				+ 'startdate.setAttribute("name","startdate");'
+        				+ 'startdate.setAttribute("value",$("#startdate").val());'
+        				+ 'newForm.appendChild(startdate);'
+        				+ 'var enddate = document.createElement("input");'
+	        			+ 'enddate.setAttribute("type","hidden");'
+        				+ 'enddate.setAttribute("name","enddate");'
+        				+ 'enddate.setAttribute("value",$("#enddate").val());'
+        				+ 'newForm.appendChild(enddate);' */
 	        			+ 'for(i=0; i<ArrayBox.length; i++){'
 	        				+ 'var input = document.createElement("input");'
 	        				+ 'input.setAttribute("type","hidden");'
@@ -1949,6 +1963,7 @@ function date_mask2(textid) {
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
 			document.getElementById("filterContainer").style.display="none";
+			document.getElementById("filter").value="setPeriod";
 			var start = document.getElementById("startdate").value;
 			var end = document.getElementById("enddate").value;
 			

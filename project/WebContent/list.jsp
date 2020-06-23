@@ -258,7 +258,6 @@ if(filter.equals("All")){
 		<%}%>
 <% }else if(filter.equals("today")){%>
 <%for(int i=0; i < list.size(); i++){
-System.out.println(list.get(i).getTime().substring(0,10));
 %>
 		<%if(list.get(i).getTime().substring(0,10).equals(todayVal)){ %>
 			<tr>
@@ -328,6 +327,32 @@ String[] dayOfWeekArr = dayOfWeek.weekCalendar(timeVal);
 					</tr>
 <%		}
 	}
+	
+}else if(filter.equals("setPeriod")){
+	String startdate = request.getParameter("startdate");
+	String enddate = request.getParameter("enddate");
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	
+	Date start_time = dateFormat.parse(startdate);
+	Date end_time = dateFormat.parse(enddate);
+	
+	for(int i=0; i < list.size(); i++){
+		Date listTime = dateFormat.parse(list.get(i).getTime().substring(0,10)); // 리스트정보에 날짜를 비교를 위해 형변환
+		if(start_time.compareTo(listTime) <= 0 && end_time.compareTo(listTime) >= 0){//시작시간 < 리스트날짜 < 끝날짜
+%>
+				<tr>
+					<td>	
+						<img class="object cover" src="<%= list.get(i).getImg_path().replace("upload","thumbnail") %>" onclick="goImginfo(<%= list.get(i).getNum()%>)">		
+					</td>
+					<td class="infotd">
+						<span><b>날짜</b> : <span class="time"><%= list.get(i).getTime().substring(0,19)%></span></span><br>
+						<span><b>제목</b> : <%= list.get(i).getSubject()%></span><br>
+						<span><b>내용</b> : <%= list.get(i).getContent()%></span>
+					</td>
+				</tr>
+<%
+		}
+	}
 }else{// filter 파라미터가 없으면 전체리스트를 보여줌
 %>
 <%for(int i=0; i < list.size(); i++){%>
@@ -343,8 +368,8 @@ String[] dayOfWeekArr = dayOfWeek.weekCalendar(timeVal);
 			</td>
 		</tr>
 		<%}%>
-<%}%>
-	
+
+	<%} %>
 </table>
 </div>
 <input type="button" class="btn btn-primary gomap" onclick="backToMap()" value="지도로 돌아가기" style="height:9%;">
