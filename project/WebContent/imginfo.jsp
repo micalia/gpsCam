@@ -139,6 +139,7 @@ String exifImgPart = "";
 <%
 String[] backNum = request.getParameterValues("backnum");
 String zoom = request.getParameter("zoom");
+String filter = request.getParameter("filter");
 %>
 <script>
 function backPage(){
@@ -152,6 +153,17 @@ function backPage(){
 	zoomVal.setAttribute("name","zoom");
 	zoomVal.setAttribute("value",<%= zoom%>);
 	newForm.appendChild(zoomVal);
+	<%
+	if(filter != null){
+		%>
+		var filterVal = document.createElement("input");
+		filterVal.setAttribute("type","hidden");
+		filterVal.setAttribute("name","filter");
+		filterVal.setAttribute("value","<%= filter%>");
+		newForm.appendChild(filterVal);
+		
+	<%}%>
+	
 	<%
 	for(int i=0; i < backNum.length; i++){
 	%>

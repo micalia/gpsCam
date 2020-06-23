@@ -227,7 +227,9 @@ body{
 <table id="listBox" class="listBox" border="1" onclick="filterNone()">
 <%
 String filter = request.getParameter("filter");
-
+if(filter == null){
+	filter ="All";
+}
 SimpleDateFormat format = new SimpleDateFormat ("yyyyMMdd");// 이번주 배열로 불러올 때 필요함
 SimpleDateFormat Todayformat = new SimpleDateFormat ("yyyy-MM-dd");// 오늘 날짜 불러올 때 필요함
 SimpleDateFormat Monthformat = new SimpleDateFormat ("yyyy-MM");// 오늘 날짜 불러올 때 필요함
@@ -405,6 +407,13 @@ function goImginfo(gonum){
 	zoomVal.setAttribute("name","zoom");
 	zoomVal.setAttribute("value",<%= zoom%>);
 	newForm.appendChild(zoomVal);
+	
+	var filterVal = document.createElement("input");
+	filterVal.setAttribute("type","hidden");
+	filterVal.setAttribute("name","filter");
+	filterVal.setAttribute("value","<%= filter%>");
+	newForm.appendChild(filterVal);
+	
 <%
 	for(int i=0; i < list.size(); i++){
 %>

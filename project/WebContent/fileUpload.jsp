@@ -92,9 +92,9 @@ if(lat == null || lng == null || lat =="" || lng == ""){
 %>
 
 <script>
-	//location.href="https://54.180.24.137:8443/project/mapsurfing.jsp";
+	location.href="https://54.180.24.137:8443/project/mapsurfing.jsp";
 	//location.href="https://110.12.74.87:8443/project/mapsurfing.jsp";
-	location.href="https://localhost:8443/project/mapsurfing.jsp";
+	//location.href="https://localhost:8443/project/mapsurfing.jsp";
 </script>
 
 </body>

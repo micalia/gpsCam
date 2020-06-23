@@ -727,10 +727,10 @@ var map = new naver.maps.Map('map', {
 		    			document.getElementById("loadingBox").style.display="block";
 		    			//navigator.geolocation.getCurrentPosition(success, error);
 		    			
-					    //document.getElementById('imageFrm').action= "http://110.12.74.87:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng;
+					    //document.getElementById('imageFrm').action= "http://110.12.74.87:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con;
 					    document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con;
 					    
-					   //document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng; 
+					   //document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con; 
 					   
 		    	       document.getElementById('imageFrm').submit(); 
 		    	    });
@@ -1894,9 +1894,7 @@ function date_mask2(textid) {
 		        } 
 		 
 		}
-		
-		
-		
+			
 		function monthSort(){
 			document.getElementById("filterGlass").style.display="none";
 			document.getElementById("glassBox").style.display="none";
