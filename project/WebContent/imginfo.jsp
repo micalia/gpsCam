@@ -136,12 +136,14 @@ String exifImgPart = "";
 	</div>
 	<input type="button" class="btn btn-primary backBtn" onclick="backPage()" value="리스트로 돌아가기">
 </div>
+<input type="hidden" id="form" value="back">
 <%
 String[] backNum = request.getParameterValues("backnum");
 String zoom = request.getParameter("zoom");
 String filter = request.getParameter("filter");
 %>
 <script>
+
 function backPage(){
 	var newForm = document.createElement("form");
 	newForm.name = "newForm";
@@ -161,6 +163,24 @@ function backPage(){
 		filterVal.setAttribute("name","filter");
 		filterVal.setAttribute("value","<%= filter%>");
 		newForm.appendChild(filterVal);
+		<%
+		if(filter.equals("setPeriod")){
+			String startdate = request.getParameter("startdate");
+			String enddate = request.getParameter("enddate");%>
+			var startdateVal = document.createElement("input");
+			startdateVal.setAttribute("type","hidden");
+			startdateVal.setAttribute("name","startdate");
+			startdateVal.setAttribute("value","<%= startdate%>");
+			newForm.appendChild(startdateVal);
+			
+			var enddateVal = document.createElement("input");
+			enddateVal.setAttribute("type","hidden");
+			enddateVal.setAttribute("name","enddate");
+			enddateVal.setAttribute("value","<%= enddate%>");
+			newForm.appendChild(enddateVal);
+			<%
+		}
+		%>
 		
 	<%}%>
 	
@@ -176,6 +196,12 @@ function backPage(){
 	document.body.appendChild(newForm);
 	newForm.submit();
 }
+
+history.pushState(null, null, location.href);
+window.onpopstate = function () {
+    history.go(1);
+};
+
 </script>
 </body>
 </html>

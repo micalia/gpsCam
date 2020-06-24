@@ -728,9 +728,9 @@ var map = new naver.maps.Map('map', {
 		    			//navigator.geolocation.getCurrentPosition(success, error);
 		    			
 					    //document.getElementById('imageFrm').action= "http://110.12.74.87:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con;
-					    document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con;
+					    //document.getElementById('imageFrm').action= "http://localhost:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con;
 					    
-					   //document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con; 
+					   document.getElementById('imageFrm').action= "http://54.180.24.137:8080/project/fileUpload.jsp?lat="+ lat +"&lng="+ lng + "&sub=" + sub + "&con=" + con; 
 					   
 		    	       document.getElementById('imageFrm').submit(); 
 		    	    });
@@ -1990,6 +1990,32 @@ function date_mask2(textid) {
 		        }
 			
 		}
+		
+<%
+String filter = request.getParameter("filter");
+	if(filter != null){%>
+		
+	<%if(filter.equals("All")){%>
+		allShow();
+	<%}else if(filter.equals("today")){%>
+		todaySort();
+	<%	}else if(filter.equals("week")){%>
+		weekSort();
+	<%	}else if(filter.equals("month")){%>
+		monthSort();
+	<%	}else if(filter.equals("year")){%>
+		thisYear();
+	<%	}else if(filter.equals("setPeriod")){
+			String startdate = request.getParameter("startdate");
+			String enddate = request.getParameter("enddate");
+			%>
+			document.getElementById("startdate").value = "<%=startdate%>";
+			document.getElementById("enddate").value = "<%=enddate%>";
+			setPeriod();
+		<%}
+			%>
+	<%}
+%>
 </script>
 
 </body>

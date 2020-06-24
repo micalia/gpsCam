@@ -38,8 +38,8 @@ public class DBConnectionMgr {
     private String _driver = "org.gjt.mm.mysql.Driver",
     _url = "jdbc:mysql://127.0.0.1:3306/gpscam?useUnicode=true&characterEncoding=UTF-8",
     _user = "root",
-    //_password = "root";
-    _password = "";
+    _password = "root";
+    //_password = "";
     private boolean _traceOn = false;
     private boolean initialized = false;
     private int _openConnections = 10;

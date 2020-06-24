@@ -380,6 +380,7 @@ String[] dayOfWeekArr = dayOfWeek.weekCalendar(timeVal);
 </div>
 
 <script>
+
 $(document).ready(function() {
     var windowHeight = $(window).innerHeight();
     $('body').css({'height':windowHeight});
@@ -413,6 +414,25 @@ function goImginfo(gonum){
 	filterVal.setAttribute("name","filter");
 	filterVal.setAttribute("value","<%= filter%>");
 	newForm.appendChild(filterVal);
+	
+	<%
+	if(filter.equals("setPeriod")){
+		String startdate = request.getParameter("startdate");
+		String enddate = request.getParameter("enddate");%>
+		var startdateVal = document.createElement("input");
+		startdateVal.setAttribute("type","hidden");
+		startdateVal.setAttribute("name","startdate");
+		startdateVal.setAttribute("value","<%= startdate%>");
+		newForm.appendChild(startdateVal);
+		
+		var enddateVal = document.createElement("input");
+		enddateVal.setAttribute("type","hidden");
+		enddateVal.setAttribute("name","enddate");
+		enddateVal.setAttribute("value","<%= enddate%>");
+		newForm.appendChild(enddateVal);
+		<%
+	}
+	%>
 	
 <%
 	for(int i=0; i < list.size(); i++){
@@ -450,6 +470,36 @@ function backToMap(){
 	input2.setAttribute("name","lng");
 	input2.setAttribute("value",<%= list.get(0).getLongitude()%>);
 	newForm.appendChild(input2);
+	
+	<%
+	if(filter != null){
+		%>
+		var filterVal = document.createElement("input");
+		filterVal.setAttribute("type","hidden");
+		filterVal.setAttribute("name","filter");
+		filterVal.setAttribute("value","<%= filter%>");
+		newForm.appendChild(filterVal);
+		
+		<%
+		if(filter.equals("setPeriod")){
+			String startdate = request.getParameter("startdate");
+			String enddate = request.getParameter("enddate");%>
+			var startdateVal = document.createElement("input");
+			startdateVal.setAttribute("type","hidden");
+			startdateVal.setAttribute("name","startdate");
+			startdateVal.setAttribute("value","<%= startdate%>");
+			newForm.appendChild(startdateVal);
+			
+			var enddateVal = document.createElement("input");
+			enddateVal.setAttribute("type","hidden");
+			enddateVal.setAttribute("name","enddate");
+			enddateVal.setAttribute("value","<%= enddate%>");
+			newForm.appendChild(enddateVal);
+			<%
+		}
+		%>
+		
+	<%}%>
 	
 	document.body.appendChild(newForm);
 	newForm.submit();
@@ -804,6 +854,17 @@ function date_mask(textid) {
 		        }
 			
 		}
+		
+		<%if(filter != null){
+			if(filter.equals("setPeriod")){
+				String startdate = request.getParameter("startdate");
+				String enddate = request.getParameter("enddate");
+			%>
+			document.getElementById("startdate").value = "<%=startdate%>";
+			document.getElementById("enddate").value = "<%=enddate%>";
+		<%
+			}
+		}%>
 </script>
 
 </body>
