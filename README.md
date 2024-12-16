@@ -8,5 +8,5 @@
 2020년 3월 ~ 5월 (약 2달)
 <br>
 ## 시연영상
-https://youtu.be/qrIj0DtebWY
+https://youtu.be/se10v761oeQ
 <br>
